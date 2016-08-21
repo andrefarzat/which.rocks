@@ -22,5 +22,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^hello/$', hello),
     url(r'^accounts/', include('allauth.urls')),
-
+    url(r'^battle/', include('battle.urls'))
 ]
