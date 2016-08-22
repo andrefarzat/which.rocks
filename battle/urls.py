@@ -1,7 +1,9 @@
 from django.conf.urls import url
-
-from . import views
+from battle.views import *
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^home/$', Home.as_view()),
+    url(r'^battle/$', Battle.as_view()),
+    url(r'^new_battle/$', NewBattle.as_view()),
+    url(r'^profile/$', Profile.as_view()),
 ]
