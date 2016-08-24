@@ -1,4 +1,4 @@
-"""mysite URL Configuration
+"""arena URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from mysite.views import hello
+from arena.views import hello
 from . import views
 
 
