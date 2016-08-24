@@ -5,17 +5,25 @@ from django.contrib.auth.models import User
 
 class Fighter(models.Model):
     name = models.CharField(max_length=200)
-    creator = models.ForeignKey('auth.User')
+    creator = models.ForeignKey('auth.User', related_name='fighters')
     description = models.TextField()
-    image = models.FileField()
+    image = models.ImageField()
+
     def __str__(self):
         return self.name
+
+    @property
+    def battles(self):
+        sql = models.Q(fighter_one=self) | models.Q(fighter_two=self)
+        return Battle.objects.filter(sql)
 
 class Battle(models.Model):
     creator = models.ForeignKey('auth.User')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
-    fighters = models.ManyToManyField(Fighter)
+    fighter_one = models.ForeignKey(Fighter, related_name='battle_one+')
+    fighter_two = models.ForeignKey(Fighter, related_name='battle_two+')
+
     def __str__(self):
         return str(self.id)
 
