@@ -1,4 +1,4 @@
-from mysite.models import *
+from arena.models import *
 user = User.objects.get(id=1)
 
 f1, created = Fighter.objects.get_or_create(name='Kyo', creator=user)

@@ -17,6 +17,7 @@ class Fighter(models.Model):
         sql = models.Q(fighter_one=self) | models.Q(fighter_two=self)
         return Battle.objects.filter(sql)
 
+
 class Battle(models.Model):
     creator = models.ForeignKey('auth.User')
     date_created = models.DateField(auto_now_add=True)
@@ -27,12 +28,14 @@ class Battle(models.Model):
     def __str__(self):
         return str(self.id)
 
+
 class Vote(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)
     figther = models.ForeignKey(Fighter, null=False, blank=False)
     voter = models.ForeignKey('auth.User')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
+
 
 class Comment(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)
