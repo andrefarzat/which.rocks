@@ -1,0 +1,20 @@
+Fighters:<br/>
+{{battle.fighter_one}} , {{battle.fighter_two}}
+<br/><br/>
+Descr:<br/>
+{{battle.fighter_one.description}} , {{battle.fighter_two.description}}
+<br/><br/>
+Vote:<br/>
+{{battle.fighter_one.vote_set.count}} , {{battle.fighter_two.vote_set.count}}
+<br/><br/>
+Latest comments:
+    <ul>
+    {% for comment in latest_comment_fighter_one %}
+        <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+    {% endfor %}
+    </ul>
+    <ul>
+    {% for comment in latest_comment_fighter_two %}
+        <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+    {% endfor %}
+    </ul>
