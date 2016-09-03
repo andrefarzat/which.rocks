@@ -7,7 +7,7 @@ class Fighter(models.Model):
     name = models.CharField(max_length=200)
     creator = models.ForeignKey('auth.User', related_name='fighters')
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to='uploads')
 
     def __str__(self):
         return self.name

@@ -7,6 +7,12 @@ Descr:<br/>
 Vote:<br/>
 {{battle.fighter_one.vote_set.count}} , {{battle.fighter_two.vote_set.count}}
 <br/><br/>
+
+Images:
+    <img src="{{MEDIA_URL}}{{battle.fighter_one.image}}">
+    <br />
+    <img src="{{MEDIA_URL}}{{battle.fighter_two.image}}">
+
 Latest comments:
     <ul>
     {% for comment in latest_comment_fighter_one %}

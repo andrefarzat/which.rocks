@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from .models import *
 
@@ -13,8 +13,16 @@ def index(request):
     return HttpResponse("Hello, world. You're at the battle index.")
 
 
-def battle(request, battle_id):
-    battle = Battle.objects.get(id=battle_id)
+def battle(request, fighter_one, fighter_two):
+
+    try:
+        battle = Battle.objects.get(fighter_one=Fighter.objects.get(name=fighter_one), fighter_two=Fighter.objects.get(name=fighter_two))
+    except:
+        try:
+            battle = Battle.objects.get(fighter_one=Fighter.objects.get(name=fighter_two), fighter_two=Fighter.objects.get(name=fighter_one))
+        except:
+            return HttpResponseNotFound('Battle not found')
+    
     latest_comment_fighter_one = Comment.objects.filter(figther=battle.fighter_one).order_by('date_created')[:5]
     latest_comment_fighter_two = Comment.objects.filter(figther=battle.fighter_two).order_by('date_created')[:5]
     return render(request, 'battle.html', {'battle': battle, 'latest_comment_fighter_one': latest_comment_fighter_one, 'latest_comment_fighter_two': latest_comment_fighter_two})
