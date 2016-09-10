@@ -8,7 +8,6 @@
     <tr>
         <td>
             {{battle.fighter_one}} [Vote]
-        </div>
         </td>
         <td>
             {{battle.fighter_two}} [Vote]
@@ -47,10 +46,10 @@
     </tr>
     <tr>
         <td>
-            <img src="{{MEDIA_URL}}{{battle.fighter_one.image}}">
+            <img src="{{battle.fighter_one.image.url}}">
         </td>
         <td>
-            <img src="{{MEDIA_URL}}{{battle.fighter_two.image}}">
+            <img src="{{battle.fighter_two.image.url}}">
         </td>
     </tr>
     <tr>

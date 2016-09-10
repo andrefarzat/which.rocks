@@ -27,9 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MEDIA_ROOT = 'media'        # Atualizar quando botar no ar
-MEDIA_URL = '/media/'       # Atualizar quando botar no ar
-
 # Application definition
 
 INSTALLED_APPS = [

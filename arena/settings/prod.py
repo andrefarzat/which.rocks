@@ -1,4 +1,4 @@
 from arena.settings import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['*']   # Mudar antes de botar no ar
+ALLOWED_HOSTS = ['*']   # FIXME: Mudar antes de botar no ar
