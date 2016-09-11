@@ -8,7 +8,8 @@ Um link para se logar (caso esteja deslogado)
 {% if request.user.is_authenticated %}
     Username: {{ request.user.username }}
 {% else %}
-    <a href="http://localhost:8000/accounts/login/">Login</a>{% endif %}
+    <a href="http://localhost:8000/accounts/login/">Login</a>
+{% endif %}
 
 <br />
 
