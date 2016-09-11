@@ -28,6 +28,9 @@ class Battle(models.Model):
     def __str__(self):
         return str(self.id)
 
+    class Meta:
+         ordering = ['date_created']
+
 
 class Vote(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)

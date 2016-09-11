@@ -1,0 +1,17 @@
+Home page
+Um link para se logar (caso esteja deslogado)
+ O nome do usuário logado E um link para o profile dele ( caso esteja logado )
+ Uma lista com as últimas 20 batalhas com link para a respectiva
+
+<br />
+
+{% if request.user.is_authenticated %}
+    Username: {{ request.user.username }}
+{% else %}
+    <a href="http://localhost:8000/accounts/login/">Login</a>{% endif %}
+
+<br />
+
+{% for battle in battles %}
+    {{ battle.id }}: {{ battle.fighter_one }} vs {{ battle.fighter_two }} <a href="http://localhost:8000/battle/{{ battle.fighter_one }}/{{ battle.fighter_two }}/">[Link]</a><br />
+{% endfor %}

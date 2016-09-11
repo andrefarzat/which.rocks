@@ -1,0 +1,8 @@
+Fighter profile page
+listando todas as batalhas que o lutador possui
+
+<br />
+
+{% for comment in latest_comments %}
+    <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+{% endfor %}

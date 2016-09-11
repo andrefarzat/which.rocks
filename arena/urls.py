@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from arena.views import hello
 from . import views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^hello/$', hello),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^$', views.index, name='index'),
     url(r'^battle/(?P<fighter_one>\w+)/(?P<fighter_two>\w+)/$', views.battle),
+    url(r'^fighter/(?P<fighter_name>\w+)/$', views.fighter_profile),
+    url(r'^new_battle/$', views.new_battle),
+    url(r'^user_profile/$', views.user_profile),
 ]
