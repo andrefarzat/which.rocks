@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from .models import Battle, Fighter, Comment
-from .forms import VoteForm
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -40,4 +40,11 @@ def fighter_profile(request, fighter_name):
 
 
 def user_profile(request):
-    return render(request, 'user_profile.html', {})
+    try:
+        latest_battles = Battle.objects.filter(creator=request.user)
+        latest_fighters = Fighter.objects.filter(creator=request.user)
+        latest_comments = Comment.objects.filter(creator=request.user)
+        latest_votes = Vote.objects.filter(voter=request.user)
+    except:
+        pass
+    return render(request, 'user_profile.html', {'latest_battles':latest_battles, 'latest_fighters':latest_fighters, 'latest_comments':latest_comments, 'latest_votes':latest_votes,})

@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^battle/(?P<fighter_one>\w+)/(?P<fighter_two>\w+)/$', views.battle),
     url(r'^fighter/(?P<fighter_name>\w+)/$', views.fighter_profile),
     url(r'^new_battle/$', views.new_battle),
-    url(r'^user_profile/$', views.user_profile),
+    url(r'^profile/$', views.user_profile),
 ]
