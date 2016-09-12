@@ -1,9 +1,9 @@
 from django import forms
-from .models import Vote
+from .models import Battle
 
 
-class VoteForm(forms.ModelForm):
+class BattleForm(forms.ModelForm):
 
     class Meta:
-        model = Vote
-        fields = ('battle', 'fighter', 'voter')
+        model = Battle
+        fields = ('fighter_one', 'fighter_two')

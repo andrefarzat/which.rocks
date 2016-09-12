@@ -1,7 +1,9 @@
-from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, render_to_response
+from django.template import RequestContext
 from .models import Battle, Fighter, Comment
 from django.contrib.auth.models import User
+from .forms import BattleForm
 
 
 # Create your views here.
@@ -26,10 +28,6 @@ def battle(request, fighter_one, fighter_two):
     return render(request, 'battle.html', {'battle': battle, 'latest_comment_fighter_one': latest_comment_fighter_one, 'latest_comment_fighter_two': latest_comment_fighter_two,})
 
 
-def new_battle(request):
-    return render(request, 'new_battle.html', {})
-
-
 def fighter_profile(request, fighter_name):
     try:
         fighter = get_object_or_404(Fighter, name=fighter_name)
@@ -48,3 +46,19 @@ def user_profile(request):
     except:
         pass
     return render(request, 'user_profile.html', {'latest_battles':latest_battles, 'latest_fighters':latest_fighters, 'latest_comments':latest_comments, 'latest_votes':latest_votes,})
+
+
+def new_battle(request):
+    if request.method == 'POST':
+        form = BattleForm(request.POST)
+        if form.is_valid():
+            newbattle = Battle(
+                creator = request.user,
+                fighter_one = Fighter.objects.get(id=request.POST['fighter_one']),
+                fighter_two = Fighter.objects.get(id=request.POST['fighter_two']),
+                )
+            newbattle.save()
+    else:
+        form = BattleForm()
+
+    return render(request, 'new_battle.html', {'form': form,})
