@@ -7,10 +7,20 @@
     </tr>
     <tr>
         <td>
-            {{battle.fighter_one}} [Vote]
+            {{battle.fighter_one}}
+            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input name="battle" type="hidden" value="{{ battle.id }}">
+                <button name="fighter" type="submit" value="{{battle.fighter_one.id}}">Vote</button>
+            </form>
         </td>
         <td>
-            {{battle.fighter_two}} [Vote]
+            {{battle.fighter_two}}
+            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input name="battle" type="hidden" value="{{ battle.id }}">
+                <button name="fighter" type="submit" value="{{battle.fighter_two.id}}">Vote</button>
+            </form>
         </td>
     </tr>
     <tr>

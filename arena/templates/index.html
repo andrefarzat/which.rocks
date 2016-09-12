@@ -1,12 +1,9 @@
-Home page
-Um link para se logar (caso esteja deslogado)
- O nome do usuário logado E um link para o profile dele ( caso esteja logado )
- Uma lista com as últimas 20 batalhas com link para a respectiva
-
-<br />
+Index Page<br />
 
 {% if request.user.is_authenticated %}
     Username: {{ request.user.username }}
+    <br />
+    <a href="http://localhost:8000/profile/">Profile</a>
 {% else %}
     <a href="http://localhost:8000/accounts/login/">Login</a>
 {% endif %}

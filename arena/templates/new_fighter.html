@@ -1,0 +1,7 @@
+You voted for: {{ fighter.name }}
+
+<form action="{% url 'new_fighter' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>{{ form.as_p }}</p>
+    <p><input type="submit" value="New Fighter" /></p>
+</form>
