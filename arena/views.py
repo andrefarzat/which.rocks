@@ -4,6 +4,7 @@ from django.template import RequestContext
 from .models import Battle, Fighter, Comment, Vote
 from django.contrib.auth.models import User
 from .forms import BattleForm, VoteForm, FighterForm
+from django.db.models import Q
 
 
 # Create your views here.
@@ -46,12 +47,16 @@ def new_battle(request):
     if request.method == 'POST':
         form = BattleForm(request.POST)
         if form.is_valid():
-            newbattle = Battle(
-                creator = request.user,
-                fighter_one = Fighter.objects.get(id=request.POST['fighter_one']),
-                fighter_two = Fighter.objects.get(id=request.POST['fighter_two']),
-                )
-            newbattle.save()
+            try:
+                created = Battle.objects.get(Q(fighter_one=request.POST['fighter_one'], fighter_two=request.POST['fighter_two']) | Q(fighter_one=request.POST['fighter_two'], fighter_two=request.POST['fighter_one']))
+                return HttpResponse("This battle already exist")
+            except:
+                newbattle = Battle(
+                    creator = request.user,
+                    fighter_one = Fighter.objects.get(id=request.POST['fighter_one']),
+                    fighter_two = Fighter.objects.get(id=request.POST['fighter_two']),
+                    )
+                newbattle.save()
     else:
         form = BattleForm()
 
@@ -62,13 +67,17 @@ def new_vote(request):
     if request.method == 'POST':
         form = VoteForm(request.POST)
         if form.is_valid():
-            newvote = Vote(
-                voter = request.user,
-                battle = Battle.objects.get(id=request.POST['battle']),
-                fighter = Fighter.objects.get(id=request.POST['fighter']),
-                )
-            newvote.save()
-            return render(request, 'new_vote.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})
+            try:
+                created = Vote.objects.get(voter = request.user, battle = Battle.objects.get(id=request.POST['battle']))
+                return HttpResponse("You already voted in this battle")
+            except:
+                newvote = Vote(
+                    voter = request.user,
+                    battle = Battle.objects.get(id=request.POST['battle']),
+                    fighter = Fighter.objects.get(id=request.POST['fighter']),
+                    )
+                newvote.save()
+                return render(request, 'new_vote.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})
     else:
         return redirect(index)
 
@@ -77,13 +86,17 @@ def new_fighter(request):
     if request.method == 'POST':
         form = FighterForm(request.POST, request.FILES)
         if form.is_valid():
-            newfighter = Fighter(
-                name = request.POST['name'],
-                creator = request.user,
-                description = request.POST['description'],
-                image = request.FILES['image'],
-                )
-            newfighter.save()
+            try:
+                created = Fighter.objects.get(name = request.POST['name'])
+                return HttpResponse("This fighter already exist")
+            except:
+                newfighter = Fighter(
+                    name = request.POST['name'],
+                    creator = request.user,
+                    description = request.POST['description'],
+                    image = request.FILES['image'],
+                    )
+                newfighter.save()
     else:
         form = FighterForm()
 
