@@ -74,7 +74,13 @@
                 <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
             {% endfor %}
             </ul>
-            Comment+
+            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input name="battle" type="hidden" value="{{ battle.id }}">
+                <input name="fighter" type="hidden" value="{{battle.fighter_one.id}}">
+                <input name="description" type="text">
+                <button type="submit">Comment</button>
+            </form>
         </td>
         <td>
             <ul>
@@ -82,12 +88,13 @@
                 <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
             {% endfor %}
             </ul>
-            Comment+
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            Comment
+            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input name="battle" type="hidden" value="{{ battle.id }}">
+                <input name="fighter" type="hidden" value="{{battle.fighter_two.id}}">
+                <input name="description" type="text">
+                <button type="submit">Comment</button>
+            </form>
         </td>
     </tr>
 </table>

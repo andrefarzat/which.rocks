@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response, redi
 from django.template import RequestContext
 from .models import Battle, Fighter, Comment, Vote
 from django.contrib.auth.models import User
-from .forms import BattleForm, VoteForm, FighterForm
+from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 from django.db.models import Q
 
 
@@ -101,3 +101,20 @@ def new_fighter(request):
         form = FighterForm()
 
     return render(request, 'new_fighter.html', {'form': form,})
+
+
+def new_comment(request):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            newcomment = Comment(
+                creator = request.user,
+                fighter = Fighter.objects.get(id=request.POST['fighter']),
+                battle = Battle.objects.get(id=request.POST['battle']),
+                description = request.POST['description'],
+                )
+            newcomment.save()
+    else:
+        return redirect(index)
+
+    return render(request, 'new_comment.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})
