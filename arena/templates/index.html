@@ -3,13 +3,13 @@ Index Page<br />
 {% if request.user.is_authenticated %}
     Username: {{ request.user.username }}
     <br />
-    <a href="http://localhost:8000/profile/">Profile</a>
+    <a href="{% url 'user_profile' %}">Profile</a>
 {% else %}
-    <a href="http://localhost:8000/accounts/login/">Login</a>
+    <a href="{% url 'login' %}">Login</a>
 {% endif %}
 
 <br />
 
 {% for battle in battles %}
-    {{ battle.id }}: {{ battle.fighter_one }} vs {{ battle.fighter_two }} <a href="http://localhost:8000/battle/{{ battle.fighter_one }}/{{ battle.fighter_two }}/">[Link]</a><br />
+    {{ battle.id }}: {{ battle.fighter_one }} vs {{ battle.fighter_two }} <a href="{% url 'battle_page' battle.fighter_one battle.fighter_two %}">[Link]</a><br />
 {% endfor %}
