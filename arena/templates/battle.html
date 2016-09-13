@@ -1,0 +1,83 @@
+
+<table border="1">
+    <tr>
+        <td colspan="2">
+            Fighters:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{battle.fighter_one}} [Vote]
+        </td>
+        <td>
+            {{battle.fighter_two}} [Vote]
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Descr:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{battle.fighter_one.description}}
+        </td>
+        <td>
+            {{battle.fighter_two.description}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Vote:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{battle.fighter_one.vote_set.count}}
+        </td>
+        <td>
+            {{battle.fighter_two.vote_set.count}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Images:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="{{battle.fighter_one.image.url}}">
+        </td>
+        <td>
+            <img src="{{battle.fighter_two.image.url}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Latest comments:
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <ul>
+            {% for comment in latest_comment_fighter_one %}
+                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+            {% endfor %}
+            </ul>
+            Comment+
+        </td>
+        <td>
+            <ul>
+            {% for comment in latest_comment_fighter_two %}
+                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+            {% endfor %}
+            </ul>
+            Comment+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Comment
+        </td>
+    </tr>
+</table>

@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^hello/$', hello),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^$', views.index, name='index'),
+    url(r'^battle/(?P<fighter_one>\w+)/(?P<fighter_two>\w+)/$', views.battle),
 ]

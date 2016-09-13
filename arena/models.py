@@ -7,7 +7,7 @@ class Fighter(models.Model):
     name = models.CharField(max_length=200)
     creator = models.ForeignKey('auth.User', related_name='fighters')
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to='uploads')
 
     def __str__(self):
         return self.name
@@ -31,7 +31,7 @@ class Battle(models.Model):
 
 class Vote(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)
-    figther = models.ForeignKey(Fighter, null=False, blank=False)
+    fighter = models.ForeignKey(Fighter, null=False, blank=False)
     voter = models.ForeignKey('auth.User')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
@@ -40,7 +40,10 @@ class Vote(models.Model):
 class Comment(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)
     creator = models.ForeignKey('auth.User')
-    figther = models.ForeignKey(Fighter, null=False, blank=False)
+    fighter = models.ForeignKey(Fighter, null=False, blank=False)
     description = models.TextField()
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
+
+    class Meta:
+         ordering = ['date_created']
