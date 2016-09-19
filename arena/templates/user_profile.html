@@ -1,0 +1,27 @@
+User profile page<br />
+
+Battles.id:
+{% for battle in latest_battles %}
+    {{ battle.id }}<br />
+{% endfor %}
+
+<br />
+
+Fighters:
+{% for fighter in latest_fighters %}
+    {{ fighter.name }}<br />
+{% endfor %}
+
+<br />
+
+Comments:
+{% for comment in latest_comments %}
+    {{ comment.fighter }}: {{ comment.description }}<br />
+{% endfor %}
+
+<br />
+
+Votes:
+{% for vote in latest_votes %}
+    {{ vote.battle.id }} - {{ vote.fighter.name }}<br />
+{% endfor %}

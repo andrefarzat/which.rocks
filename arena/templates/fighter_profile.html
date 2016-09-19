@@ -1,0 +1,5 @@
+Fighter profile page<br />
+
+{% for battle in battles %}
+    <li>{{ battle.id }}: {{ battle.fighter_one }} vs {{ battle.fighter_two }}</li>
+{% endfor %}

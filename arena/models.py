@@ -28,6 +28,9 @@ class Battle(models.Model):
     def __str__(self):
         return str(self.id)
 
+    class Meta:
+         ordering = ['-date_created']
+
 
 class Vote(models.Model):
     battle = models.ForeignKey(Battle, null=False, blank=False)
@@ -35,6 +38,9 @@ class Vote(models.Model):
     voter = models.ForeignKey('auth.User')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
+
+    class Meta:
+         ordering = ['-date_created']
 
 
 class Comment(models.Model):
@@ -46,4 +52,4 @@ class Comment(models.Model):
     date_updated = models.DateField(auto_now=True)
 
     class Meta:
-         ordering = ['date_created']
+         ordering = ['-date_created']
