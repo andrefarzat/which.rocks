@@ -8,7 +8,7 @@
     <tr>
         <td>
             {{battle.fighter_one}}
-            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'vote' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input name="battle" type="hidden" value="{{ battle.id }}">
                 <button name="fighter" type="submit" value="{{battle.fighter_one.id}}">Vote</button>
@@ -16,7 +16,7 @@
         </td>
         <td>
             {{battle.fighter_two}}
-            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'vote' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input name="battle" type="hidden" value="{{ battle.id }}">
                 <button name="fighter" type="submit" value="{{battle.fighter_two.id}}">Vote</button>
