@@ -1,11 +1,12 @@
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
-from .models import Battle, Fighter, Comment, Vote
-from django.contrib.auth.models import User
-from .forms import BattleForm, VoteForm, FighterForm, CommentForm
-from django.db.models import Q
 from django.views.generic import View
+
+from .models import Battle, Fighter, Comment, Vote
+from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 
 
 # Create your views here.
