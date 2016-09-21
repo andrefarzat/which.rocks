@@ -12,6 +12,8 @@ from django.views.generic import View
 
 
 class VoteView(View):
+    template_name = 'vote_new.html'
+
     def post(self, request):
         form = VoteForm(request.POST)
         if form.is_valid():
@@ -31,18 +33,24 @@ class VoteView(View):
     def get(self, request, id=None):
         if id == None :
             form = VoteForm()
-            return render(request, 'new_vote.html', {'form': form, 'method': 'post'})
+            return render(request, self.template_name, {'form': form, })
         else:
             vote = Vote.objects.get(id=id)
-
-            form = VoteForm()
-            form.fields['battle'].queryset = Battle.objects.filter(id=vote.battle.id)
-            form.fields['fighter'].queryset = Fighter.objects.filter(id=vote.battle.id)
-
-            return HttpResponse("Vote for " + vote.fighter.name + " in battle " + str(vote.battle.id))
+            if self.template_name == 'vote_edit.html' :
+                form = VoteForm(initial={'battle': Battle.objects.get(id=vote.battle.id), 'fighter': vote.fighter})
+                form.fields['battle'].queryset = Battle.objects.filter(id=vote.battle.id)
+                form.fields['fighter'].queryset = Fighter.objects.filter(id=vote.battle.fighter_one.id) | Fighter.objects.filter(id=vote.battle.fighter_two.id)
+                form.fields['battle'].disabled = True
+                return render(request, self.template_name, {'form': form, })
+            else:
+                return HttpResponse("Vote for " + vote.fighter.name + " in battle " + str(vote.battle.id))
 
     def put(self, request):
-        pass    #FIXME
+        form = VoteForm(request.PUT)
+        changedvote = Vote.objects.get(voter=request.user, battle=Battle.objects.get(id=request.PUT['battle']))
+        changedvote.fighter = Fighter.objects.get(id=request.PUT['fighter'])
+        changedvote.save()
+        return HttpResponse("You changed your vote to " + changedvote.fighter.name)
 
     def delete(self, request):
         pass    #FIXME
