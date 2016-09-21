@@ -1,13 +1,61 @@
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
+from django.views.generic import View
+
 from .models import Battle, Fighter, Comment, Vote
-from django.contrib.auth.models import User
 from .forms import BattleForm, VoteForm, FighterForm, CommentForm
-from django.db.models import Q
 
 
 # Create your views here.
+
+
+class VoteView(View):
+    template_name = 'vote_new.html'
+
+    def post(self, request):
+        form = VoteForm(request.POST)
+        if form.is_valid():
+            try:
+                created = Vote.objects.get(voter = request.user, battle = Battle.objects.get(id=request.POST['battle']))
+                return HttpResponse("You already voted in this battle")
+            except:
+                newvote = Vote(
+                    voter = request.user,
+                    battle = Battle.objects.get(id=request.POST['battle']),
+                    fighter = Fighter.objects.get(id=request.POST['fighter']),
+                    )
+                newvote.save()
+                fighter = Fighter.objects.get(id=request.POST['fighter'])
+                return HttpResponse("You voted for " + fighter.name)
+
+    def get(self, request, id=None):
+        if id == None :
+            form = VoteForm()
+            return render(request, self.template_name, {'form': form, })
+        else:
+            vote = Vote.objects.get(id=id)
+            if self.template_name == 'vote_edit.html' :
+                form = VoteForm(initial={'battle': Battle.objects.get(id=vote.battle.id), 'fighter': vote.fighter})
+                form.fields['battle'].queryset = Battle.objects.filter(id=vote.battle.id)
+                form.fields['fighter'].queryset = Fighter.objects.filter(id=vote.battle.fighter_one.id) | Fighter.objects.filter(id=vote.battle.fighter_two.id)
+                form.fields['battle'].disabled = True
+                return render(request, self.template_name, {'form': form, })
+            else:
+                return HttpResponse("Vote for " + vote.fighter.name + " in battle " + str(vote.battle.id))
+
+    def put(self, request):
+        form = VoteForm(request.PUT)
+        changedvote = Vote.objects.get(voter=request.user, battle=Battle.objects.get(id=request.PUT['battle']))
+        changedvote.fighter = Fighter.objects.get(id=request.PUT['fighter'])
+        changedvote.save()
+        return HttpResponse("You changed your vote to " + changedvote.fighter.name)
+
+    def delete(self, request):
+        pass    #FIXME
+
 
 def index(request):
     battles = Battle.objects.filter()[:20]
@@ -61,25 +109,6 @@ def new_battle(request):
         form = BattleForm()
 
     return render(request, 'new_battle.html', {'form': form,})
-
-
-def new_vote(request):
-    if request.method == 'POST':
-        form = VoteForm(request.POST)
-        if form.is_valid():
-            try:
-                created = Vote.objects.get(voter = request.user, battle = Battle.objects.get(id=request.POST['battle']))
-                return HttpResponse("You already voted in this battle")
-            except:
-                newvote = Vote(
-                    voter = request.user,
-                    battle = Battle.objects.get(id=request.POST['battle']),
-                    fighter = Fighter.objects.get(id=request.POST['fighter']),
-                    )
-                newvote.save()
-                return render(request, 'new_vote.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})
-    else:
-        return redirect(index)
 
 
 def new_fighter(request):
