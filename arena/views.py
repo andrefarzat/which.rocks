@@ -60,7 +60,7 @@ class NewView(View):
     def get(self, request):
         form = BattleForm()
         form2 = FighterForm()
-        return render(request, 'battle_new.html', {'form': form, 'form2': form2,})
+        return render(request, 'new.html', {'form': form, 'form2': form2,})
 
 
 def index(request):
