@@ -18,6 +18,7 @@ class NewView(View):
     def post(self, request):
         # Check if creating new fighter or new battle, else 404
         if 'name' in request.POST and 'description' in request.POST and 'image' in request.FILES:
+            # If FighterForm
             form = FighterForm(request.POST, request.FILES)
             if form.is_valid():
                 # Check if fighter already exists
@@ -34,6 +35,7 @@ class NewView(View):
                 else:
                     return HttpResponse("This fighter already exist")
         elif 'fighter_one' in request.POST and 'fighter_two' in request.POST:
+            # If BattleForm
             form = BattleForm(request.POST)
             if form.is_valid():
                 # Check if using the same fighter twice
