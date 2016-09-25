@@ -1,0 +1,21 @@
+{% if request.user.is_authenticated %}
+    Create New Battle<br />
+
+    <form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.as_p }}</p>
+        <p><input type="submit" value="New Battle" /></p>
+    </form>
+
+    Or
+    </br></br>
+    Create New Fighter
+
+    <form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form2.as_p }}</p>
+        <p><input type="submit" value="New Fighter" /></p>
+    </form>
+{% else %}
+    <a href="{% url 'account_login' %}">Login</a>
+{% endif %}

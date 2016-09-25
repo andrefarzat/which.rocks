@@ -19,9 +19,10 @@ from . import views
 
 
 urlpatterns = [
+    url(r'^$', views.index, name='index'),
+    url(r'^new/$', views.NewView.as_view(), name='new'),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^accounts/', include('allauth.urls'), name='login'),
-    url(r'^$', views.index, name='index'),
     url(r'^battle/(?P<fighter_one>\w+)/(?P<fighter_two>\w+)/$', views.battle, name='battle_page'),
     url(r'^fighter/(?P<fighter_name>\w+)/$', views.fighter_profile, name='fighter_profile'),
     url(r'^new_battle/$', views.new_battle, name='new_battle'),

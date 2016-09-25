@@ -1,13 +1,47 @@
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, render_to_response, redirect
-from django.template import RequestContext
-from .models import Battle, Fighter, Comment, Vote
 from django.contrib.auth.models import User
-from .forms import BattleForm, VoteForm, FighterForm, CommentForm
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template import RequestContext
+from django.views.generic import View
+
+from .models import Battle, Fighter, Comment, Vote
+from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 
 
 # Create your views here.
+
+
+class NewView(View):
+
+    def post(self, request):
+        form = BattleForm(request.POST)
+        if form.is_valid():
+            # Check if using the same fightec twice
+            if request.POST['fighter_one'] == request.POST['fighter_two'] :
+                return HttpResponse("You can't use the same fighter twice")
+            else:
+                fighter_one = Fighter.objects.get(id=request.POST['fighter_one'])
+                fighter_two = Fighter.objects.get(id=request.POST['fighter_two'])
+                # Check if battle with the same fightes already exists
+                created = Battle.objects.filter(fighter_one = fighter_one, fighter_two = fighter_two) | Battle.objects.filter(fighter_one = fighter_two, fighter_two = fighter_one)
+                if created.count() == 0 :
+                    new = Battle(
+                        creator = request.user,
+                        fighter_one = fighter_one,
+                        fighter_two = fighter_two,
+                        )
+                    new.save()
+                    return HttpResponse("You created the battle: " + fighter_one.name + " vs " + fighter_two.name)
+                else:
+                    return HttpResponse("Battle already exists")
+
+    def get(self, request):
+        form = BattleForm()
+        form2 = FighterForm()
+        return render(request, 'battle_new.html', {'form': form, 'form2': form2,})
+
 
 def index(request):
     battles = Battle.objects.filter()[:20]
