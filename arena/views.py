@@ -16,26 +16,46 @@ from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 class NewView(View):
 
     def post(self, request):
-        form = BattleForm(request.POST)
-        if form.is_valid():
-            # Check if using the same fightec twice
-            if request.POST['fighter_one'] == request.POST['fighter_two'] :
-                return HttpResponse("You can't use the same fighter twice")
-            else:
-                fighter_one = Fighter.objects.get(id=request.POST['fighter_one'])
-                fighter_two = Fighter.objects.get(id=request.POST['fighter_two'])
-                # Check if battle with the same fightes already exists
-                created = Battle.objects.filter(fighter_one = fighter_one, fighter_two = fighter_two) | Battle.objects.filter(fighter_one = fighter_two, fighter_two = fighter_one)
+        # Check if creating new fighter or new battle, else 404
+        if 'name' in request.POST and 'description' in request.POST and 'image' in request.FILES:
+            form = FighterForm(request.POST, request.FILES)
+            if form.is_valid():
+                # Check if fighter already exists
+                created = Fighter.objects.filter(name = request.POST['name'])
                 if created.count() == 0 :
-                    new = Battle(
+                    new = Fighter(
+                        name = request.POST['name'],
                         creator = request.user,
-                        fighter_one = fighter_one,
-                        fighter_two = fighter_two,
+                        description = request.POST['description'],
+                        image = request.FILES['image'],
                         )
                     new.save()
-                    return HttpResponse("You created the battle: " + fighter_one.name + " vs " + fighter_two.name)
+                    return HttpResponse("You created the Fighter: " + new.name)
                 else:
-                    return HttpResponse("Battle already exists")
+                    return HttpResponse("This fighter already exist")
+        elif 'fighter_one' in request.POST and 'fighter_two' in request.POST:
+            form = BattleForm(request.POST)
+            if form.is_valid():
+                # Check if using the same fighter twice
+                if request.POST['fighter_one'] == request.POST['fighter_two'] :
+                    return HttpResponse("You can't use the same fighter twice")
+                else:
+                    fighter_one = Fighter.objects.get(id=request.POST['fighter_one'])
+                    fighter_two = Fighter.objects.get(id=request.POST['fighter_two'])
+                    # Check if battle with the same fightes already exists
+                    created = Battle.objects.filter(fighter_one = fighter_one, fighter_two = fighter_two) | Battle.objects.filter(fighter_one = fighter_two, fighter_two = fighter_one)
+                    if created.count() == 0 :
+                        new = Battle(
+                            creator = request.user,
+                            fighter_one = fighter_one,
+                            fighter_two = fighter_two,
+                            )
+                        new.save()
+                        return HttpResponse("You created the battle: " + fighter_one.name + " vs " + fighter_two.name)
+                    else:
+                        return HttpResponse("Battle already exists")
+        else:
+            raise HttpResponseNotFound("Wrong form used")
 
     def get(self, request):
         form = BattleForm()
