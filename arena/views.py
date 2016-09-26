@@ -16,6 +16,19 @@ from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 class NewView(View):
 
     def post(self, request):
+        fighter1 = FighterForm(request.POST, request.FILES, prefix='one')
+        fighter2 = FighterForm(request.POST, request.FILES, prefix='two')
+
+        # 1. Verificar se os lutadores são válidos
+        # 1. Verificar se algum lutador já exista (retornar erro caso sim)
+        # 1. Criar a batalha
+
+        if not fighter1.is_valid() or not fighter2.is_valid():
+            return render(request, 'new.html', {'fighter1': fighter1,
+                                                'fighter2': fighter2})
+
+
+    def __post(self, request):
         # Check if creating new fighter or new battle, else 404
         if 'name' in request.POST and 'description' in request.POST and 'image' in request.FILES:
             # If FighterForm
@@ -60,9 +73,8 @@ class NewView(View):
             raise HttpResponseNotFound("Wrong form used")
 
     def get(self, request):
-        form = BattleForm()
-        form2 = FighterForm()
-        return render(request, 'new.html', {'form': form, 'form2': form2,})
+        return render(request, 'new.html', {'fighter1': FighterForm(prefix='one'),
+                                            'fighter2': FighterForm(prefix='two')})
 
 
 def index(request):

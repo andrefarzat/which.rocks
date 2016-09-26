@@ -13,18 +13,18 @@ class VoteForm(forms.ModelForm):
 
     class Meta:
         model = Vote
-        fields = ('fighter','battle')
+        fields = ('fighter', 'battle')
 
 
 class FighterForm(forms.ModelForm):
 
     class Meta:
         model = Fighter
-        fields = ('name','description','image')
+        fields = ('name', 'description', 'image')
 
 
 class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ('battle','fighter','description')
+        fields = ('battle', 'fighter', 'description')

@@ -30,6 +30,7 @@ class Battle(models.Model):
 
     class Meta:
          ordering = ['-date_created']
+         unique_together = ('fighter_one', 'fighter_two')
 
 
 class Vote(models.Model):
@@ -41,6 +42,7 @@ class Vote(models.Model):
 
     class Meta:
          ordering = ['-date_created']
+         unique_together = ('battle', 'voter')
 
 
 class Comment(models.Model):
