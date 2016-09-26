@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Fighter(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     creator = models.ForeignKey('auth.User', related_name='fighters')
     description = models.TextField()
     image = models.ImageField(upload_to='uploads')
