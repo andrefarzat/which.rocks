@@ -3,9 +3,11 @@ Index Page<br />
 {% if request.user.is_authenticated %}
     Username: {{ request.user.username }}
     <br />
-    <a href="{% url 'user_profile' %}">Profile</a>
+    <a href="{% url 'user_profile' %}">Profile</a></br>
+    <a href="{% url 'account_logout' %}">Logout</a>
 {% else %}
-    <a href="{% url 'account_login' %}">Login</a>
+    {% load socialaccount %}
+    <a href="{% provider_login_url "facebook" method="oauth2" next="/" %}">Login</a>
 {% endif %}
 
 <br />
