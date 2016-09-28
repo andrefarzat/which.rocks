@@ -37,7 +37,7 @@ class TestCreateBattleView(TestCase):
         fighter_one = battle.fighter_one
         fighter_two = FighterFactory.build(creator=self.user)
 
-        data[] = {}
+        data = {}
         data['fighter_one_name'] = fighter_one.name
         data['fighter_one_creator'] = None
         data['fighter_one_description'] = None
@@ -59,7 +59,7 @@ class TestCreateBattleView(TestCase):
         fighter_one = battle.fighter_one
         fighter_two = battle.fighter_two
 
-        data[] = {}
+        data = {}
         data['fighter_one_name'] = fighter_one.name
         data['fighter_one_creator'] = None
         data['fighter_one_description'] = None
