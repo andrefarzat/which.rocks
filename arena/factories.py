@@ -1,0 +1,38 @@
+import factory
+
+from arena.models import User, Fighter
+
+USERNAME = 'joey'
+PASSWORD = 'dontworryaboutme'
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    first_name = 'Joey'
+    last_name = 'Ramone'
+    email = 'joey@ramones.com'
+    username = USERNAME
+    password = PASSWORD
+    is_staff = False
+    is_superuser = False
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with our custom call."""
+        manager = cls._get_manager(model_class)
+        # The default would use ``manager.create(*args, **kwargs)``
+        return manager.create_user(*args, **kwargs)
+
+
+    class Meta:
+        model = User
+
+
+
+class FighterFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'figther{0}'.format(n))
+    description = factory.LazyAttribute(lambda x: 'Description for {0}'.format(x.name))
+    image = factory.django.ImageField()
+    creator = factory.SubFactory(UserFactory)
+
+    class Meta:
+        model = Fighter
