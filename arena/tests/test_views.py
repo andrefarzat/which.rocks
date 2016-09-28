@@ -50,9 +50,31 @@ class TestCreateBattleView(TestCase):
 
         self.client.post(reverse('new'), data)
 
-        battle = Battle.objects.first()
-        self.assertEqual(battle.fighter_one.name, data['fighter_one_name'])
-        self.assertEqual(battle.fighter_two.name, data['fighter_two_name'])
+        new_battle = Battle.objects.first()
+        self.assertEqual(new_battle.fighter_one.name, data['fighter_one_name'])
+        self.assertEqual(new_battle.fighter_two.name, data['fighter_two_name'])
+
+    def test_create_battle_with_both_old_figthers(self):
+        battle = BattleFactory(creator=self.user)
+        fighter_one = battle.fighter_one
+        fighter_two = battle.fighter_two
+
+        data[] = {}
+        data['fighter_one_name'] = fighter_one.name
+        data['fighter_one_creator'] = None
+        data['fighter_one_description'] = None
+        data['fighter_one_image'] = None
+
+        data['fighter_two_name'] = fighter_two.name
+        data['fighter_two_creator'] = None
+        data['fighter_two_description'] = None
+        data['fighter_two_image'] = None
+
+        self.client.post(reverse('new'), data)
+
+        new_battle = Battle.objects.first()
+        self.assertEqual(new_battle.fighter_one.name, data['fighter_one_name'])
+        self.assertEqual(new_battle.fighter_two.name, data['fighter_two_name'])
 
 
 
