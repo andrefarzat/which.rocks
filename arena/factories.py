@@ -1,6 +1,6 @@
 import factory
 
-from arena.models import User, Fighter
+from arena.models import User, Fighter, Battle
 
 USERNAME = 'joey'
 PASSWORD = 'dontworryaboutme'
@@ -22,10 +22,8 @@ class UserFactory(factory.django.DjangoModelFactory):
         # The default would use ``manager.create(*args, **kwargs)``
         return manager.create_user(*args, **kwargs)
 
-
     class Meta:
         model = User
-
 
 
 class FighterFactory(factory.django.DjangoModelFactory):
@@ -36,3 +34,11 @@ class FighterFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Fighter
+
+class BattleFactory(factory.django.DjangoModelFactory):
+    creator = factory.SubFactory(UserFactory)
+    fighter_one = factory.SubFactory(FighterFactory, creator=factory.LazyAttribute(lambda b: b.factory_parent.creator))
+    fighter_two = factory.SubFactory(FighterFactory, creator=factory.LazyAttribute(lambda b: b.factory_parent.creator))
+
+    class Meta:
+        model = Battle

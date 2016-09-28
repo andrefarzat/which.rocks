@@ -22,7 +22,6 @@ class NewView(View):
         # 1. Verificar se os lutadores são válidos
         # 1. Verificar se algum lutador já exista (retornar erro caso sim)
         # 1. Criar a batalha
-        import ipdb; ipdb.set_trace()
         if not form1.is_valid() or not form2.is_valid():
             return render(request, 'new.html', {'fighter1': form1,
                                                 'fighter2': form2})
