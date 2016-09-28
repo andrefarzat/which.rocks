@@ -16,16 +16,30 @@ from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 class NewView(View):
 
     def post(self, request):
-        fighter1 = FighterForm(request.POST, request.FILES, prefix='one')
-        fighter2 = FighterForm(request.POST, request.FILES, prefix='two')
+        form1 = FighterForm(request.POST, request.FILES, prefix='one')
+        form2 = FighterForm(request.POST, request.FILES, prefix='two')
 
         # 1. Verificar se os lutadores são válidos
         # 1. Verificar se algum lutador já exista (retornar erro caso sim)
         # 1. Criar a batalha
+        import ipdb; ipdb.set_trace()
+        if not form1.is_valid() or not form2.is_valid():
+            return render(request, 'new.html', {'fighter1': form1,
+                                                'fighter2': form2})
+        fighters = []
+        for form in (form1, form2):
+            try:
+                fighter = Fighter.objects.get(name=form.instance.name)
+            except Fighter.DoesNotExist:
+                form.instance.creator = request.user
+                form.save()
+                fighter = form.instance
+            fighters.append(fighter)
 
-        if not fighter1.is_valid() or not fighter2.is_valid():
-            return render(request, 'new.html', {'fighter1': fighter1,
-                                                'fighter2': fighter2})
+        battle = Battle.objects.create(creator=request.user, fighter_one=fighters[0],
+                                       fighter_two=fighters[1])
+
+        return self.get(request, success=True)
 
 
     def __post(self, request):
@@ -72,9 +86,10 @@ class NewView(View):
         else:
             raise HttpResponseNotFound("Wrong form used")
 
-    def get(self, request):
+    def get(self, request, success=None):
         return render(request, 'new.html', {'fighter1': FighterForm(prefix='one'),
-                                            'fighter2': FighterForm(prefix='two')})
+                                            'fighter2': FighterForm(prefix='two'),
+                                            'success': success})
 
 
 def index(request):
