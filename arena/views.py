@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -13,7 +14,9 @@ from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 # Create your views here.
 
 
-class NewView(View):
+class NewView(LoginRequiredMixin, View):
+    login_url = 'facebook_login'
+    redirect_field_name = '/new/'
 
     def post(self, request):
         form1 = FighterForm(request.POST, request.FILES, prefix='one')
