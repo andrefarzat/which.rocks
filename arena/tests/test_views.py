@@ -75,6 +75,3 @@ class TestCreateBattleView(TestCase):
         new_battle = Battle.objects.first()
         self.assertEqual(new_battle.fighter_one.name, data['fighter_one_name'])
         self.assertEqual(new_battle.fighter_two.name, data['fighter_two_name'])
-
-
-

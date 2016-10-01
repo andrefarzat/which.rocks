@@ -19,25 +19,26 @@ class NewView(LoginRequiredMixin, View):
     redirect_field_name = '/new/'
 
     def post(self, request):
-        form1 = FighterForm(request.POST, request.FILES, prefix='one')
-        form2 = FighterForm(request.POST, request.FILES, prefix='two')
-
-        # 1. Verificar se os lutadores são válidos
-        # 1. Verificar se algum lutador já exista (retornar erro caso sim)
-        # 1. Criar a batalha
-        if not form1.is_valid() or not form2.is_valid():
-            return render(request, 'new.html', {'fighter1': form1,
-                                                'fighter2': form2})
+        form = []
         fighters = []
-        for form in (form1, form2):
+        prefix=('one', 'two')
+        for i in range(0, 2):
             try:
-                fighter = Fighter.objects.get(name=form.instance.name)
+                fighter = Fighter.objects.get(name=request.POST[prefix[i]+'-name'])
             except Fighter.DoesNotExist:
-                form.instance.creator = request.user
-                form.save()
-                fighter = form.instance
-            fighters.append(fighter)
+                form.append(FighterForm(request.POST, request.FILES, prefix=prefix[i]))
+                if not form[i].is_valid():
+                    return self.get(request)
+                else:
+                    form[i].instance.creator = request.user
+                    form[i].save()
+                    fighter = form[i].instance
+                    fighters.append(fighter)
+            else:
+                form.append(FighterForm(instance=fighter))
+                fighters.append(fighter)
 
+        #FIXME: Verificar se batalha já existe
         battle = Battle.objects.create(creator=request.user, fighter_one=fighters[0],
                                        fighter_two=fighters[1])
 
