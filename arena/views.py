@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -13,77 +14,35 @@ from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 # Create your views here.
 
 
-class NewView(View):
+class NewView(LoginRequiredMixin, View):
+    login_url = 'facebook_login'
+    redirect_field_name = '/new/'
 
     def post(self, request):
-        form1 = FighterForm(request.POST, request.FILES, prefix='one')
-        form2 = FighterForm(request.POST, request.FILES, prefix='two')
-
-        # 1. Verificar se os lutadores são válidos
-        # 1. Verificar se algum lutador já exista (retornar erro caso sim)
-        # 1. Criar a batalha
-        if not form1.is_valid() or not form2.is_valid():
-            return render(request, 'new.html', {'fighter1': form1,
-                                                'fighter2': form2})
+        form = []
         fighters = []
-        for form in (form1, form2):
+        prefix=('one', 'two')
+        for i in range(0, 2):
             try:
-                fighter = Fighter.objects.get(name=form.instance.name)
+                fighter = Fighter.objects.get(name=request.POST[prefix[i]+'-name'])
             except Fighter.DoesNotExist:
-                form.instance.creator = request.user
-                form.save()
-                fighter = form.instance
-            fighters.append(fighter)
+                form.append(FighterForm(request.POST, request.FILES, prefix=prefix[i]))
+                if not form[i].is_valid():
+                    return self.get(request)
+                else:
+                    form[i].instance.creator = request.user
+                    form[i].save()
+                    fighter = form[i].instance
+                    fighters.append(fighter)
+            else:
+                form.append(FighterForm(instance=fighter))
+                fighters.append(fighter)
 
+        #FIXME: Verificar se batalha já existe
         battle = Battle.objects.create(creator=request.user, fighter_one=fighters[0],
                                        fighter_two=fighters[1])
 
         return self.get(request, success=True)
-
-
-    def __post(self, request):
-        # Check if creating new fighter or new battle, else 404
-        if 'name' in request.POST and 'description' in request.POST and 'image' in request.FILES:
-            # If FighterForm
-            form = FighterForm(request.POST, request.FILES)
-            if form.is_valid():
-                # Check if fighter already exists
-                created = Fighter.objects.filter(name = request.POST['name'])
-                if created.count() == 0 :
-                    new = Fighter(
-                        name = request.POST['name'],
-                        creator = request.user,
-                        description = request.POST['description'],
-                        image = request.FILES['image'],
-                        )
-                    new.save()
-                    return HttpResponse("You created the Fighter: " + new.name)
-                else:
-                    return HttpResponse("This fighter already exist")
-        elif 'fighter_one' in request.POST and 'fighter_two' in request.POST:
-            # If BattleForm
-            form = BattleForm(request.POST)
-            if form.is_valid():
-                # Check if using the same fighter twice
-                if request.POST['fighter_one'] == request.POST['fighter_two'] :
-                    return HttpResponse("You can't use the same fighter twice")
-                else:
-                    fighter_one = Fighter.objects.get(id=request.POST['fighter_one'])
-                    fighter_two = Fighter.objects.get(id=request.POST['fighter_two'])
-                    # Check if battle with the same fightes already exists
-                    created = Battle.objects.filter(fighter_one = fighter_one, fighter_two = fighter_two) | Battle.objects.filter(fighter_one = fighter_two, fighter_two = fighter_one)
-                    if created.count() == 0 :
-                        new = Battle(
-                            creator = request.user,
-                            fighter_one = fighter_one,
-                            fighter_two = fighter_two,
-                            )
-                        new.save()
-                        return HttpResponse("You created the battle: " + fighter_one.name + " vs " + fighter_two.name)
-                    else:
-                        return HttpResponse("Battle already exists")
-        else:
-            raise HttpResponseNotFound("Wrong form used")
 
     def get(self, request, success=None):
         return render(request, 'new.html', {'fighter1': FighterForm(prefix='one'),
