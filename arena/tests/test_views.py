@@ -8,7 +8,7 @@ from arena.models import Fighter, Battle
 class TestCreateBattleView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = UserFactory()
+        self.user = UserFactory(username=USERNAME)
         self.client.login(username=USERNAME, password=PASSWORD)
 
     def test_create_battle_with_new_figthers(self):

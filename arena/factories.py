@@ -7,10 +7,10 @@ PASSWORD = 'dontworryaboutme'
 
 
 class UserFactory(factory.django.DjangoModelFactory):
-    first_name = 'Joey'
+    first_name = factory.Sequence(lambda n: 'Joey{0}'.format(n))
     last_name = 'Ramone'
-    email = 'joey@ramones.com'
-    username = USERNAME
+    email = factory.LazyAttribute(lambda x: x.first_name + '.ramone@gmail.com')
+    username = factory.LazyAttribute(lambda x: x.first_name.lower())
     password = PASSWORD
     is_staff = False
     is_superuser = False

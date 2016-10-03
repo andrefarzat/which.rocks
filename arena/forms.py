@@ -2,11 +2,17 @@ from django import forms
 from .models import Battle, Vote, Fighter, Comment
 
 
-class BattleForm(forms.ModelForm):
+class BattleForm(forms.Form):
+    fighter_one_name = forms.CharField(required=True)
+    fighter_one_image = forms.ImageField(required=False)
+    fighter_one_description = forms.CharField(required=False)
+    fighter_two_name = forms.CharField(required=True)
+    fighter_two_image = forms.ImageField(required=False)
+    fighter_two_description = forms.CharField(required=False)
 
-    class Meta:
-        model = Battle
-        fields = ('fighter_one', 'fighter_two')
+    def clean(self):
+        data = super().clean()
+        print( data )
 
 
 class VoteForm(forms.ModelForm):

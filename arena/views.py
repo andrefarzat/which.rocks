@@ -21,8 +21,8 @@ class NewView(LoginRequiredMixin, View):
     def post(self, request):
         form = []
         fighters = []
-        prefix=('one', 'two')
-        for i in range(0, 2):
+
+        for prefix in ('one', 'two'):
             try:
                 fighter = Fighter.objects.get(name=request.POST[prefix[i]+'-name'])
             except Fighter.DoesNotExist:
