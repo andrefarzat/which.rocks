@@ -19,24 +19,21 @@ class NewView(LoginRequiredMixin, View):
     redirect_field_name = '/new/'
 
     def post(self, request):
-        form = []
         fighters = []
 
         for prefix in ('one', 'two'):
             try:
-                fighter = Fighter.objects.get(name=request.POST[prefix[i]+'-name'])
+                fighter = Fighter.objects.get(name=request.POST[prefix + '-name'])
+                fighters.append(fighter)
             except Fighter.DoesNotExist:
-                form.append(FighterForm(request.POST, request.FILES, prefix=prefix[i]))
-                if not form[i].is_valid():
+                form = FighterForm(request.POST, request.FILES, prefix=prefix)
+                if not form.is_valid():
                     return self.get(request)
                 else:
-                    form[i].instance.creator = request.user
-                    form[i].save()
-                    fighter = form[i].instance
+                    form.instance.creator = request.user
+                    form.save()
+                    fighter = form.instance
                     fighters.append(fighter)
-            else:
-                form.append(FighterForm(instance=fighter))
-                fighters.append(fighter)
 
         #FIXME: Verificar se batalha já existe
         battle = Battle.objects.create(creator=request.user, fighter_one=fighters[0],

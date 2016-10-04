@@ -12,7 +12,10 @@ class BattleForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-        print( data )
+        raise NotImplemented('Terminar isso aqui')
+
+    def save(self):
+        raise NotImplemented('Salvar a batalha aqui')
 
 
 class VoteForm(forms.ModelForm):

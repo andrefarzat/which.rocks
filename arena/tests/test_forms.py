@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from arena.factories import FighterFactory, UserFactory
 from arena.forms import BattleForm
+from arena.models import Battle
 
 
 class TestBattleForm(TestCase):
@@ -20,5 +21,10 @@ class TestBattleForm(TestCase):
 
         form = BattleForm(data)
         self.assertTrue(form.is_valid())
+        form.save()
+
+        battle = Battle.objects.last()
+        self.assertEqual(battle.fighter_one.name, fighter_one.name)
+        self.assertEqual(battle.fighter_two.name, fighter_two.name)
 
 

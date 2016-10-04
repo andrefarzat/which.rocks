@@ -1,11 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
 
-class Fighter(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+class BaseModel(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Fighter(BaseModel):
     creator = models.ForeignKey('auth.User', related_name='fighters')
+    name = models.CharField(max_length=200, unique=True)
     description = models.TextField()
     image = models.ImageField(upload_to='uploads')
 
@@ -18,40 +25,33 @@ class Fighter(models.Model):
         return Battle.objects.filter(sql)
 
 
-class Battle(models.Model):
-    creator = models.ForeignKey('auth.User')
-    date_created = models.DateField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
-    fighter_one = models.ForeignKey(Fighter, related_name='battle_one+')
-    fighter_two = models.ForeignKey(Fighter, related_name='battle_two+')
+class Battle(BaseModel):
+    creator = models.ForeignKey('auth.User', related_name='battles')
+    fighter_one = models.ForeignKey(Fighter, related_name='+')
+    fighter_two = models.ForeignKey(Fighter, related_name='+')
 
     def __str__(self):
         return str(self.id)
 
+    @property
+    def fighters(self):
+        return Fighter.objects.filter(id__in=[self.fighter_one_id, self.fighter_two_id])
+
     class Meta:
-         ordering = ['-date_created']
          unique_together = ('fighter_one', 'fighter_two')
 
 
-class Vote(models.Model):
+class Vote(BaseModel):
+    creator = models.ForeignKey('auth.User', related_name='votes')
     battle = models.ForeignKey(Battle, null=False, blank=False)
     fighter = models.ForeignKey(Fighter, null=False, blank=False)
-    voter = models.ForeignKey('auth.User')
-    date_created = models.DateField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
 
     class Meta:
-         ordering = ['-date_created']
-         unique_together = ('battle', 'voter')
+         unique_together = ('battle', 'creator')
 
 
-class Comment(models.Model):
+class Comment(BaseModel):
+    creator = models.ForeignKey('auth.User', related_name='comments')
     battle = models.ForeignKey(Battle, null=False, blank=False)
-    creator = models.ForeignKey('auth.User')
     fighter = models.ForeignKey(Fighter, null=False, blank=False)
     description = models.TextField()
-    date_created = models.DateField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
-
-    class Meta:
-         ordering = ['-date_created']
