@@ -13,6 +13,7 @@ class BaseModel(models.Model):
 class Fighter(BaseModel):
     creator = models.ForeignKey('auth.User', related_name='fighters')
     name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(unique=True)
     description = models.TextField()
     image = models.ImageField(upload_to='uploads')
 

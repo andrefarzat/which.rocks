@@ -1,5 +1,7 @@
 from django import forms
-from .models import Battle, Vote, Fighter, Comment
+from django.utils.text import slugify
+
+from arena.models import Battle, Vote, Fighter, Comment
 
 
 class BattleForm(forms.Form):
@@ -26,6 +28,11 @@ class VoteForm(forms.ModelForm):
 
 
 class FighterForm(forms.ModelForm):
+    def save(self):
+        instance = super(FighterForm, self).save(commit=False)
+        instance.slug = slugify(instance.name)
+        instance.save()
+        return instance
 
     class Meta:
         model = Fighter

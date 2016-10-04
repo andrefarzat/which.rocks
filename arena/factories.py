@@ -28,6 +28,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class FighterFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'figther{0}'.format(n))
+    slug = factory.Sequence(lambda n: 'slug{0}'.format(n))
     description = factory.LazyAttribute(lambda x: 'Description for {0}'.format(x.name))
     image = factory.django.ImageField()
     creator = factory.SubFactory(UserFactory)
