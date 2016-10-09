@@ -6,10 +6,13 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import View
+from django import forms
+
 
 from .models import Battle, Fighter, Comment, Vote
 from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 
+import pdb
 
 # Create your views here.
 
@@ -20,7 +23,17 @@ class NewView(LoginRequiredMixin, View):
 
     def post(self, request):
         fighters = []
-
+        pdb.set_trace()
+        for prefix in ('one', 'two'):
+            fighter = FighterForm(request.POST, request.FILES, prefix=prefix)
+            if fighter.clean(prefix):
+                fighter.save()
+            else:
+                fighter = Fighter.objects.get(slug=request.POST[prefix + '-slug'])
+            fighters.append(fighter)
+        """
+        fighters = []
+        pdb.set_trace()
         for prefix in ('one', 'two'):
             try:
                 fighter = Fighter.objects.get(name=request.POST[prefix + '-name'])
@@ -40,10 +53,15 @@ class NewView(LoginRequiredMixin, View):
                                        fighter_two=fighters[1])
 
         return self.get(request, success=True)
+        """
 
     def get(self, request, success=None):
-        return render(request, 'new.html', {'fighter1': FighterForm(prefix='one'),
-                                            'fighter2': FighterForm(prefix='two'),
+        form1 = FighterForm(prefix='one')
+        form2 = FighterForm(prefix='two')
+        form1.fields['slug'].widget = forms.HiddenInput()
+        form2.fields['slug'].widget = forms.HiddenInput()
+        return render(request, 'new.html', {'fighter1': form1,
+                                            'fighter2': form2,
                                             'success': success})
 
 
@@ -82,23 +100,17 @@ def user_profile(request):
 
 
 def new_battle(request):
+    pdb.set_trace()
     if request.method == 'POST':
         form = BattleForm(request.POST)
-        if form.is_valid():
-            try:
-                created = Battle.objects.get(Q(fighter_one=request.POST['fighter_one'], fighter_two=request.POST['fighter_two']) | Q(fighter_one=request.POST['fighter_two'], fighter_two=request.POST['fighter_one']))
-                return HttpResponse("This battle already exist")
-            except:
-                newbattle = Battle(
-                    creator = request.user,
-                    fighter_one = Fighter.objects.get(id=request.POST['fighter_one']),
-                    fighter_two = Fighter.objects.get(id=request.POST['fighter_two']),
-                    )
-                newbattle.save()
+        if form.battle_exists():
+            return HttpResponse("This battle already exist")
+        else:
+            return HttpResponse("New battle")
     else:
         form = BattleForm()
 
-    return render(request, 'new_battle.html', {'form': form,})
+    return render(request, 'new.html', {'form': form,})
 
 
 def new_vote(request):

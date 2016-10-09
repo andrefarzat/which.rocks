@@ -3,21 +3,21 @@ from django.utils.text import slugify
 
 from arena.models import Battle, Vote, Fighter, Comment
 
+import pdb
+
 
 class BattleForm(forms.Form):
-    fighter_one_name = forms.CharField(required=True)
-    fighter_one_image = forms.ImageField(required=False)
-    fighter_one_description = forms.CharField(required=False)
-    fighter_two_name = forms.CharField(required=True)
-    fighter_two_image = forms.ImageField(required=False)
-    fighter_two_description = forms.CharField(required=False)
 
-    def clean(self):
-        data = super().clean()
-        raise NotImplemented('Terminar isso aqui')
+    def battle_exists(self):
+        sql = Battle.objects.filter(fighter_one=self.data['fighter_one'], fighter_two=self.data['fighter_two']) | Battle.objects.filter(fighter_one=self.data['fighter_two'], fighter_two=self.data['fighter_one'])
+        if sql.count() == 0:
+            return False
+        else:
+            return True
 
-    def save(self):
-        raise NotImplemented('Salvar a batalha aqui')
+    class Meta:
+        model = Vote
+        fields = ('fighter_one', 'fighter_two')
 
 
 class VoteForm(forms.ModelForm):
@@ -28,6 +28,20 @@ class VoteForm(forms.ModelForm):
 
 
 class FighterForm(forms.ModelForm):
+
+    def clean(self, prefix=None):
+        pdb.set_trace()
+        if prefix == None:
+            if self.data['slug'] == None:
+                return False
+            else:
+                return True
+        else:
+            if self.data[prefix + '-slug'] == None:
+                return False
+            else:
+                return True
+
     def save(self):
         instance = super(FighterForm, self).save(commit=False)
         instance.slug = slugify(instance.name)
@@ -36,7 +50,7 @@ class FighterForm(forms.ModelForm):
 
     class Meta:
         model = Fighter
-        fields = ('name', 'description', 'image')
+        fields = ('name', 'description', 'image', 'slug')
 
 
 class CommentForm(forms.ModelForm):
