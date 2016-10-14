@@ -31,6 +31,8 @@ class NewView(LoginRequiredMixin, View):
                 fighter = Fighter.objects.get(slug=request.POST[prefix + '-slug'])
             fighters.append(fighter)
 
+        #FIXME: Daqui pra baixo nao esta funcionando
+
         data = {}
         data['fighter_one'] = fighters[0]
         data['fighter_two'] = fighters[1]
