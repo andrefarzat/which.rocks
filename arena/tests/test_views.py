@@ -19,36 +19,40 @@ class TestCreateBattleView(TestCase):
         data['one-name'] = fighter_one.name
         data['one-description'] = fighter_one.description
         data['one-image'] = fighter_one.image
+        data['one-slug'] = ''
 
         data['two-name'] = fighter_two.name
         data['two-description'] = fighter_two.description
         data['two-image'] = fighter_two.image
-
-        self.client.post(reverse('new'), data)
-
-        battle = Battle.objects.first()
-        self.assertEqual(battle.fighter_one.name, data['one-name'])
-        self.assertEqual(battle.fighter_two.name, data['two-name'])
-
-    def test_create_battle_with_one_old_figther_and_one_new_fighter(self):
-        battle = BattleFactory(creator=self.user)
-        fighter_one = battle.fighter_one
-        fighter_two = FighterFactory.build(creator=self.user)
-
-        data = {}
-        data['one-name'] = fighter_one.name
-        data['one-description'] = None
-        data['one-image'] = None
-
-        data['two-name'] = fighter_two.name
-        data['two-description'] = fighter_two.description
-        data['two-image'] = fighter_two.image
+        data['two-slug'] = ''
 
         self.client.post(reverse('new'), data)
 
         new_battle = Battle.objects.last()
-        self.assertEqual(new_battle.fighter_one.name, fighter_one.name)
-        self.assertEqual(new_battle.fighter_two.name, fighter_two.name)
+        self.assertEqual(new_battle.fighter_one.name, data['one-name'])
+        self.assertEqual(new_battle.fighter_two.name, data['two-name'])
+
+    def test_create_battle_with_one_old_figther_and_one_new_fighter(self):
+        battle = BattleFactory(creator=self.user)
+        fighter_one = battle.fighter_one                            #Old
+        fighter_two = FighterFactory.build(creator=self.user)       #New
+
+        data = {}
+        data['one-name'] = ''
+        data['one-description'] = ''
+        data['one-image'] = ''
+        data['one-slug'] = fighter_one.slug
+
+        data['two-name'] = fighter_two.name
+        data['two-description'] = fighter_two.description
+        data['two-image'] = fighter_two.image
+        data['two-slug'] = ''
+
+        self.client.post(reverse('new'), data)
+
+        new_battle = Battle.objects.last()
+        self.assertEqual(new_battle.fighter_one.slug, fighter_one.slug)
+        self.assertEqual(new_battle.fighter_two.name, data['two-name'])
 
     def test_create_battle_with_both_old_figthers(self):
         battle1 = BattleFactory(creator=self.user)
@@ -57,16 +61,18 @@ class TestCreateBattleView(TestCase):
         fighter_two = battle2.fighter_two
 
         data = {}
-        data['one-name'] = fighter_one.name
-        data['one-description'] = None
-        data['one-image'] = None
+        data['one-name'] = ''
+        data['one-description'] = ''
+        data['one-image'] = ''
+        data['one-slug'] = fighter_one.slug
 
-        data['two-name'] = fighter_two.name
-        data['two-description'] = None
-        data['two-image'] = None
+        data['two-name'] = ''
+        data['two-description'] = ''
+        data['two-image'] = ''
+        data['two-slug'] = fighter_two.slug
 
         self.client.post(reverse('new'), data)
 
         new_battle = Battle.objects.last()
-        self.assertEqual(new_battle.fighter_one.name, data['one-name'])
-        self.assertEqual(new_battle.fighter_two.name, data['two-name'])
+        self.assertEqual(new_battle.fighter_one.slug, fighter_one.slug)
+        self.assertEqual(new_battle.fighter_two.slug, fighter_two.slug)

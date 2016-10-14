@@ -1,14 +1,14 @@
+import itertools
+
 from django import forms
 from django.utils.text import slugify
 
 from arena.models import Battle, Vote, Fighter, Comment
 
-import pdb
 
+class BattleForm(forms.ModelForm):
 
-class BattleForm(forms.Form):
-
-    def battle_exists(self):
+    def exists(self):
         sql = Battle.objects.filter(fighter_one=self.data['fighter_one'], fighter_two=self.data['fighter_two']) | Battle.objects.filter(fighter_one=self.data['fighter_two'], fighter_two=self.data['fighter_one'])
         if sql.count() == 0:
             return False
@@ -16,8 +16,8 @@ class BattleForm(forms.Form):
             return True
 
     class Meta:
-        model = Vote
-        fields = ('fighter_one', 'fighter_two')
+        model = Battle
+        fields = ('fighter_one', 'fighter_two', 'creator')
 
 
 class VoteForm(forms.ModelForm):
@@ -28,23 +28,15 @@ class VoteForm(forms.ModelForm):
 
 
 class FighterForm(forms.ModelForm):
-
-    def clean(self, prefix=None):
-        pdb.set_trace()
-        if prefix == None:
-            if self.data['slug'] == None:
-                return False
-            else:
-                return True
-        else:
-            if self.data[prefix + '-slug'] == None:
-                return False
-            else:
-                return True
+    slug = forms.CharField(required=False)
 
     def save(self):
         instance = super(FighterForm, self).save(commit=False)
-        instance.slug = slugify(instance.name)
+        instance.slug = orig = slugify(instance.name)
+        for x in itertools.count(1):
+            if not Fighter.objects.filter(slug=instance.slug).exists():
+                break
+            instance.slug = '%s%d' % (orig, x)
         instance.save()
         return instance
 

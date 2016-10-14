@@ -8,11 +8,9 @@ from django.template import RequestContext
 from django.views.generic import View
 from django import forms
 
-
 from .models import Battle, Fighter, Comment, Vote
 from .forms import BattleForm, VoteForm, FighterForm, CommentForm
 
-import pdb
 
 # Create your views here.
 
@@ -23,37 +21,28 @@ class NewView(LoginRequiredMixin, View):
 
     def post(self, request):
         fighters = []
-        pdb.set_trace()
         for prefix in ('one', 'two'):
-            fighter = FighterForm(request.POST, request.FILES, prefix=prefix)
-            if fighter.clean(prefix):
-                fighter.save()
+            form = FighterForm(request.POST, request.FILES, prefix=prefix)
+            if form.data[prefix + '-slug'] == '':
+                form.instance.creator = request.user
+                form.save()
+                fighter = form.instance
             else:
                 fighter = Fighter.objects.get(slug=request.POST[prefix + '-slug'])
             fighters.append(fighter)
-        """
-        fighters = []
-        pdb.set_trace()
-        for prefix in ('one', 'two'):
-            try:
-                fighter = Fighter.objects.get(name=request.POST[prefix + '-name'])
-                fighters.append(fighter)
-            except Fighter.DoesNotExist:
-                form = FighterForm(request.POST, request.FILES, prefix=prefix)
-                if not form.is_valid():
-                    return self.get(request)
-                else:
-                    form.instance.creator = request.user
-                    form.save()
-                    fighter = form.instance
-                    fighters.append(fighter)
 
-        #FIXME: Verificar se batalha já existe
-        battle = Battle.objects.create(creator=request.user, fighter_one=fighters[0],
-                                       fighter_two=fighters[1])
+        data = {}
+        data['fighter_one'] = fighters[0]
+        data['fighter_two'] = fighters[1]
+        data['creator'] = request.user
 
-        return self.get(request, success=True)
-        """
+        battle = BattleForm(data)
+
+        if battle.exists():
+            return HttpResponse("This battle already exist")
+        else:
+            battle.save()
+            return self.get(request, success=True)
 
     def get(self, request, success=None):
         form1 = FighterForm(prefix='one')
@@ -100,7 +89,6 @@ def user_profile(request):
 
 
 def new_battle(request):
-    pdb.set_trace()
     if request.method == 'POST':
         form = BattleForm(request.POST)
         if form.battle_exists():

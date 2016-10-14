@@ -1,5 +1,7 @@
 import factory
 
+from django.utils.text import slugify
+
 from arena.models import User, Fighter, Battle
 
 USERNAME = 'joey'
@@ -32,6 +34,7 @@ class FighterFactory(factory.django.DjangoModelFactory):
     description = factory.LazyAttribute(lambda x: 'Description for {0}'.format(x.name))
     image = factory.django.ImageField()
     creator = factory.SubFactory(UserFactory)
+    slug = factory.LazyAttribute(lambda n: slugify(n.name))
 
     class Meta:
         model = Fighter
