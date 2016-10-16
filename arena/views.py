@@ -31,8 +31,6 @@ class NewView(LoginRequiredMixin, View):
                 fighter = Fighter.objects.get(slug=request.POST[prefix + '-slug'])
             fighters.append(fighter)
 
-        #FIXME: Daqui pra baixo nao esta funcionando
-
         data = {}
         data['fighter_one'] = fighters[0]
         data['fighter_two'] = fighters[1]
@@ -49,8 +47,8 @@ class NewView(LoginRequiredMixin, View):
     def get(self, request, success=None):
         form1 = FighterForm(prefix='one')
         form2 = FighterForm(prefix='two')
-        form1.fields['slug'].widget = forms.HiddenInput()
-        form2.fields['slug'].widget = forms.HiddenInput()
+        #form1.fields['slug'].widget = forms.HiddenInput()  #FIXME
+        #form2.fields['slug'].widget = forms.HiddenInput()  #FIXME
         return render(request, 'new.html', {'fighter1': form1,
                                             'fighter2': form2,
                                             'success': success})
