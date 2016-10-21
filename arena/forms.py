@@ -6,18 +6,21 @@ from django.utils.text import slugify
 from arena.models import Battle, Vote, Fighter, Comment
 
 
-class BattleForm(forms.Form):
+class BattleForm(forms.ModelForm):
 
     def exists(self):
-        sql = Battle.objects.filter(fighter_one=self.data['fighter_one'], fighter_two=self.data['fighter_two']) | Battle.objects.filter(fighter_one=self.data['fighter_two'], fighter_two=self.data['fighter_one'])
+        fighter_one = Fighter.objects.get(id=self.data['fighter_one'])
+        fighter_two = Fighter.objects.get(id=self.data['fighter_two'])
+        sql = Battle.objects.filter(fighter_one=fighter_one, fighter_two=fighter_two) | Battle.objects.filter(fighter_one=fighter_two, fighter_two=fighter_one)
         if sql.count() == 0:
             return False
         else:
             return True
 
     def save(self):
-        new_battle = Battle(fighter_one=self.data['fighter_one'], fighter_two=self.data['fighter_two'], creator=self.data['creator'])
-        new_battle.save()
+        instance = super(BattleForm, self).save(commit=False)
+        instance.save()
+        return instance
 
     class Meta:
         model = Battle
@@ -40,7 +43,7 @@ class FighterForm(forms.ModelForm):
         for x in itertools.count(1):
             if not Fighter.objects.filter(slug=instance.slug).exists():
                 break
-            instance.slug = '%s-%d' % (orig, x)
+            instance.slug = '%s_%d' % (orig, x)
         instance.save()
         return instance
 

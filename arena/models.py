@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+
 
 
 class BaseModel(models.Model):
@@ -18,7 +20,7 @@ class Fighter(BaseModel):
     image = models.ImageField(upload_to='uploads')
 
     def __str__(self):
-        return self.name
+        return self.slug
 
     @property
     def battles(self):
@@ -37,6 +39,9 @@ class Battle(BaseModel):
     @property
     def fighters(self):
         return Fighter.objects.filter(id__in=[self.fighter_one_id, self.fighter_two_id])
+
+    def get_absolute_url(self):
+        return reverse('battle_page', args=(self.fighter_one.slug, self.fighter_two.slug))
 
     class Meta:
          unique_together = ('fighter_one', 'fighter_two')

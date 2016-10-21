@@ -21,6 +21,7 @@ class NewView(LoginRequiredMixin, View):
 
     def post(self, request):
         fighters = []
+        forms = []
         for prefix in ('one', 'two'):
             form = FighterForm(request.POST, request.FILES, prefix=prefix)
             if form.data[prefix + '-slug'] == '':
@@ -30,28 +31,50 @@ class NewView(LoginRequiredMixin, View):
             else:
                 fighter = Fighter.objects.get(slug=request.POST[prefix + '-slug'])
             fighters.append(fighter)
+            forms.append(form)
 
         data = {}
-        data['fighter_one'] = fighters[0]
-        data['fighter_two'] = fighters[1]
-        data['creator'] = request.user
+        data['fighter_one'] = fighters[0].id
+        data['fighter_two'] = fighters[1].id
+        data['creator'] = request.user.id
 
         battle = BattleForm(data)
 
         if battle.exists():
-            return HttpResponse("This battle already exist")
+            return self.get(request, forms=forms)
         else:
             battle.save()
-            return self.get(request, success=True)
+            return redirect(battle.instance)
 
-    def get(self, request, success=None):
-        form1 = FighterForm(prefix='one')
-        form2 = FighterForm(prefix='two')
+    def get(self, request, success=None, forms=None):
+        if forms:
+            form1 = forms[0]
+            form2 = forms[1]
+        else:
+            form1 = FighterForm(prefix='one')
+            form2 = FighterForm(prefix='two')
         #form1.fields['slug'].widget = forms.HiddenInput()  #FIXME
         #form2.fields['slug'].widget = forms.HiddenInput()  #FIXME
         return render(request, 'new.html', {'fighter1': form1,
                                             'fighter2': form2,
                                             'success': success})
+
+
+class BattleView(View):
+    def get(self, request, slug_one, slug_two):
+        import ipdb; ipdb.set_trace()
+        fighter_one = Fighter.objects.get(slug=slug_one)
+        fighter_two = Fighter.objects.get(slug=slug_two)
+        battle = Battle.objects.filter(fighter_one=fighter_one, fighter_two=fighter_two) | Battle.objects.filter(fighter_one=fighter_two, fighter_two=fighter_one)
+        #try:
+        #    battle = get_object_or_404(Battle, fighter_one=fighter_one, fighter_two=fighter_two)
+        #except:
+        #    battle = get_object_or_404(Battle, fighter_one=fighter_two, fighter_two=fighter_one)
+
+        latest_comment_fighter_one = Comment.objects.filter(fighter=battle[0].fighter_one)[:5]
+        latest_comment_fighter_two = Comment.objects.filter(fighter=battle[0].fighter_two)[:5]
+
+        return render(request, 'battle.html', {'battle': battle[0], 'latest_comment_fighter_one': latest_comment_fighter_one, 'latest_comment_fighter_two': latest_comment_fighter_two,})
 
 
 def index(request):
