@@ -1,9 +1,27 @@
 import itertools
 
+from arena.models import Battle, Vote, Fighter, Comment
+
 from django import forms
 from django.utils.text import slugify
 
-from arena.models import Battle, Vote, Fighter, Comment
+
+class FighterForm(forms.ModelForm):
+    slug = forms.CharField(required=False)
+
+    def save(self):
+        instance = super(FighterForm, self).save(commit=False)
+        instance.slug = orig = slugify(instance.name)
+        for x in itertools.count(1):
+            if not Fighter.objects.filter(slug=instance.slug).exists():
+                break
+            instance.slug = '%s_%d' % (orig, x)
+        instance.save()
+        return instance
+
+    class Meta:
+        model = Fighter
+        fields = ('name', 'description', 'image', 'slug')
 
 
 class BattleForm(forms.ModelForm):
@@ -32,24 +50,6 @@ class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
         fields = ('fighter', 'battle')
-
-
-class FighterForm(forms.ModelForm):
-    slug = forms.CharField(required=False)
-
-    def save(self):
-        instance = super(FighterForm, self).save(commit=False)
-        instance.slug = orig = slugify(instance.name)
-        for x in itertools.count(1):
-            if not Fighter.objects.filter(slug=instance.slug).exists():
-                break
-            instance.slug = '%s_%d' % (orig, x)
-        instance.save()
-        return instance
-
-    class Meta:
-        model = Fighter
-        fields = ('name', 'description', 'image', 'slug')
 
 
 class CommentForm(forms.ModelForm):
