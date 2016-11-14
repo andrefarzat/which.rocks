@@ -1,21 +1,25 @@
 {% if request.user.is_authenticated %}
-Create New Battle<br />
+
+{% if error %}
+    <h1 style="color: red;">{{ error }}</h1>
+{% endif %}
 
 <form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <p>{{ form.as_p }}</p>
-    <p><input type="submit" value="New Battle" /></p>
+    <fieldset>
+        <legend>Figther 1</legend>
+        {{ fighter1.as_p }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Figther 2</legend>
+        {{ fighter2.as_p }}
+    </fieldset>
+
+    <p>&nbsp;</p>
+    <input type="submit" value="Create battle" />
 </form>
 
-Or
-</br></br>
-Create New Fighter
-
-<form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>{{ form2.as_p }}</p>
-    <p><input type="submit" value="New Fighter" /></p>
-</form>
 {% else %}
     {% load socialaccount %}
     <a href="{% provider_login_url "facebook" method="oauth2" next="/new/" %}">Login</a>

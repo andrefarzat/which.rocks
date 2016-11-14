@@ -3,7 +3,7 @@ Index Page<br />
 {% if request.user.is_authenticated %}
     Username: {{ request.user.username }}
     <br />
-    <a href="{% url 'user_profile' %}">Profile</a></br>
+    <a href="{% url 'settings' %}">Settings</a></br>
     <a href="{% url 'account_logout' %}">Logout</a>
 {% else %}
     {% load socialaccount %}
