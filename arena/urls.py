@@ -19,14 +19,13 @@ from . import views
 
 
 urlpatterns = [
+    url(r'^$', views.HomeView.as_view(), name='index'),
+    url(r'^new/$', views.NewView.as_view(), name='new'),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^accounts/', include('allauth.urls'), name='login'),
-    url(r'^$', views.index, name='index'),
-    url(r'^battle/(?P<fighter_one>\w+)/(?P<fighter_two>\w+)/$', views.battle, name='battle_page'),
-    url(r'^fighter/(?P<fighter_name>\w+)/$', views.fighter_profile, name='fighter_profile'),
-    url(r'^new_battle/$', views.new_battle, name='new_battle'),
-    url(r'^new_vote/$', views.new_vote, name='new_vote'),
-    url(r'^new_fighter/$', views.new_fighter, name='new_fighter'),
-    url(r'^new_comment/$', views.new_comment, name='new_comment'),
-    url(r'^profile/$', views.user_profile, name='user_profile'),
+    url(r'^settings/$', views.SettingsView.as_view(), name='settings'),
+    url(r'^@(?P<username>\w+)$', views.UserView.as_view(), name='user_profile'),
+    url(r'^(?P<fighter_slug>\w+)/$', views.FighterView.as_view(), name='fighter_profile'),
+    url(r'^(?P<fighter_slug>\w+)/edit/$', views.FighterView.as_view(), name='fighter_edit'),
+    url(r'^(?P<slug_one>\w+)/(?P<slug_two>\w+)/$', views.BattleView.as_view(), name='battle_page'),
 ]
