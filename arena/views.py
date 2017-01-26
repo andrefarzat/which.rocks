@@ -57,6 +57,12 @@ class NewView(LoginRequiredMixin, View):
                                             'fighter2': form2,
                                             'success': success})
 
+        def post(self, request):
+            #FIXME Help here
+            if vote:
+                return HttpResponse("You voted in this battle")
+            if comment:
+                return HttpResponse("You commented in this battle")
 
 class BattleView(View):
     def get(self, request, slug_one, slug_two):
@@ -108,7 +114,7 @@ class SettingsView(View):
     def get(self, request):
         return HttpResponse("Settings page")
 
-
+#Old stuff
 def new_vote(request):
     if request.method == 'POST':
         form = VoteForm(request.POST)
