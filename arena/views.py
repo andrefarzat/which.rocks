@@ -50,8 +50,9 @@ class NewView(LoginRequiredMixin, View):
         else:
             form1 = FighterForm(prefix='one')
             form2 = FighterForm(prefix='two')
-        form1.fields['slug'].widget = forms.HiddenInput()
-        form2.fields['slug'].widget = forms.HiddenInput()
+        #FIXME
+        #form1.fields['slug'].widget = forms.HiddenInput()
+        #form2.fields['slug'].widget = forms.HiddenInput()
         return render(request, 'new.html', {'fighter1': form1,
                                             'fighter2': form2,
                                             'success': success})
@@ -76,7 +77,6 @@ class BattleView(View):
         return render(request, 'battle.html', { 'battle': battle[0],
                                                 'latest_comment_fighter_one': latest_comment_fighter_one,
                                                 'latest_comment_fighter_two': latest_comment_fighter_two,})
-
 
 class HomeView(View):
     def get(self, request):
