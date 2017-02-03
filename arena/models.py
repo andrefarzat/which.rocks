@@ -17,7 +17,7 @@ class Fighter(BaseModel):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to='uploads')
 
     def __str__(self):
         return self.slug
