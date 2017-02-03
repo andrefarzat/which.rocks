@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>UI Design</title>
+		<title>{{battle.fighter_one.name}} vs {{battle.fighter_two.name}}</title>
 		<!-- Description, Keywords and Author -->
 		<meta name="description" content="Your description">
 		<meta name="keywords" content="Your,Keywords">
@@ -12,24 +12,22 @@
 
 		<!-- Styles -->
 		<!-- Bootstrap CSS -->
-		<link href="ui/css/bootstrap.min.css" rel="stylesheet">
+        {% load static from staticfiles %}
+		<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
 		<!-- Font awesome CSS -->
-		<link href="ui/css/font-awesome.min.css" rel="stylesheet">
+		<link href="{% static "css/font-awesome.min.css" %}" rel="stylesheet">
 
 
 		<!-- Main CSS -->
-		<link href="ui/css/style-97.css" rel="stylesheet">
+		<link href="{% static "css/estilos.css" %}" rel="stylesheet">
 
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="#">
 	</head>
 
 	<body>
-
-
 		<!-- UI X -->
 		<div class="ui-97">
-
 			<div class="container">
 				<div class="row">
 					<div class="col-md-4 col-sm-4">
@@ -44,9 +42,10 @@
 							<h3><a href="#">{{battle.fighter_one}}</a></h3>
 							<!-- Member designation -->
 							<span>
-                                <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+                                <form action="{% url 'battle_page' slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
                                     {% csrf_token %}{{battle.fighter_one.vote_set.count}}
                                     <input name="battle" type="hidden" value="{{ battle.id }}">
+                                    <input type="hidden" name="action" value="vote" />
                                     <button name="fighter" type="submit" value="{{battle.fighter_one.id}}">Vote</button>
                                 </form>
                             </span>
@@ -68,9 +67,10 @@
                                 <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
                             {% endfor %}
                             </ul>
-                            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
+                            <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input name="battle" type="hidden" value="{{ battle.id }}">
+                                <input type="hidden" name="action" value="comment" />
                                 <input name="fighter" type="hidden" value="{{battle.fighter_one.id}}">
                                 <input name="description" type="text">
                                 <button type="submit">Comment</button>
@@ -89,9 +89,10 @@
 							<h3><a href="#">{{battle.fighter_two}}</a></h3>
 							<!-- Member designation -->
 							<span>
-                                <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
+                                <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
                                     {% csrf_token %}{{battle.fighter_two.vote_set.count}}
                                     <input name="battle" type="hidden" value="{{ battle.id }}">
+                                    <input type="hidden" name="action" value="vote" />
                                     <button name="fighter" type="submit" value="{{battle.fighter_two.id}}">Vote</button>
                                 </form>
                             </span>
@@ -113,9 +114,10 @@
                                 <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
                             {% endfor %}
                             </ul>
-                            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
+                            <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input name="battle" type="hidden" value="{{ battle.id }}">
+                                <input type="hidden" name="action" value="comment" />
                                 <input name="fighter" type="hidden" value="{{battle.fighter_two.id}}">
                                 <input name="description" type="text">
                                 <button type="submit">Comment</button>
@@ -129,14 +131,14 @@
 
 		<!-- Javascript files -->
 		<!-- jQuery -->
-		<script src="ui/js/jquery.js"></script>
+		<script src="{% static "js/jquery.js" %}"></script>
 		<!-- Bootstrap JS -->
-		<script src="ui/js/bootstrap.min.js"></script>
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
 		<!-- Placeholder JS -->
-		<script src="ui/js/placeholder.js"></script>
+		<script src="{% static "js/placeholder.js" %}"></script>
 		<!-- Respond JS for IE8 -->
-		<script src="ui/js/respond.min.js"></script>
+		<script src="{% static "js/respond.min.js" %}"></script>
 		<!-- HTML5 Support for IE -->
-		<script src="ui/js/html5shiv.js"></script>
+		<script src="{% static "js/html5shiv.js" %}"></script>
 	</body>
 </html>

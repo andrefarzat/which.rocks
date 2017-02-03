@@ -133,6 +133,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/arena/'
 
 
 # Add the 'allauth' backend to AUTHENTICATION_BACKEND and do not remove ModelBackend

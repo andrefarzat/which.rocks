@@ -57,13 +57,6 @@ class NewView(LoginRequiredMixin, View):
                                             'fighter2': form2,
                                             'success': success})
 
-        def post(self, request):
-            #FIXME Help here
-            if vote:
-                return HttpResponse("You voted in this battle")
-            if comment:
-                return HttpResponse("You commented in this battle")
-
 class BattleView(View):
     def get(self, request, slug_one, slug_two):
         try:
@@ -82,7 +75,17 @@ class BattleView(View):
 
         return render(request, 'battle.html', { 'battle': battle[0],
                                                 'latest_comment_fighter_one': latest_comment_fighter_one,
-                                                'latest_comment_fighter_two': latest_comment_fighter_two,})
+                                                'latest_comment_fighter_two':latest_comment_fighter_two,})
+    def post(self, request, slug_one, slug_two):
+        if request.POST['action'] == "vote":
+            form = VoteForm(request.POST)
+            form.instance.creator = request.user
+            form.save()
+        if request.POST['action'] == "comment":
+            form = CommentForm(request.POST)
+            form.instance.creator = request.user
+            form.save()
+        return self.get(request, slug_one, slug_two)
 
 class HomeView(View):
     def get(self, request):
