@@ -76,6 +76,7 @@ class BattleView(View):
         return render(request, 'battle.html', { 'battle': battle[0],
                                                 'latest_comment_fighter_one': latest_comment_fighter_one,
                                                 'latest_comment_fighter_two':latest_comment_fighter_two,})
+
     def post(self, request, slug_one, slug_two):
         if request.POST['action'] == "vote":
             form = VoteForm(request.POST)
