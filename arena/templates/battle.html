@@ -1,100 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{{battle.fighter_one.name}} vs {{battle.fighter_two.name}}</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="Your description">
+		<meta name="keywords" content="Your,Keywords">
+		<meta name="author" content="ResponsiveWebInc">
 
-<table border="1">
-    <tr>
-        <td colspan="2">
-            Fighters:
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{battle.fighter_one}}
-            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input name="battle" type="hidden" value="{{ battle.id }}">
-                <button name="fighter" type="submit" value="{{battle.fighter_one.id}}">Vote</button>
-            </form>
-        </td>
-        <td>
-            {{battle.fighter_two}}
-            <form action="{% url 'new_vote' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input name="battle" type="hidden" value="{{ battle.id }}">
-                <button name="fighter" type="submit" value="{{battle.fighter_two.id}}">Vote</button>
-            </form>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            Descr:
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{battle.fighter_one.description}}
-        </td>
-        <td>
-            {{battle.fighter_two.description}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            Vote:
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{battle.fighter_one.vote_set.count}}
-        </td>
-        <td>
-            {{battle.fighter_two.vote_set.count}}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            Images:
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <img src="{{battle.fighter_one.image.url}}">
-        </td>
-        <td>
-            <img src="{{battle.fighter_two.image.url}}">
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            Latest comments:
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <ul>
-            {% for comment in latest_comment_fighter_one %}
-                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
-            {% endfor %}
-            </ul>
-            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input name="battle" type="hidden" value="{{ battle.id }}">
-                <input name="fighter" type="hidden" value="{{battle.fighter_one.id}}">
-                <input name="description" type="text">
-                <button type="submit">Comment</button>
-            </form>
-        </td>
-        <td>
-            <ul>
-            {% for comment in latest_comment_fighter_two %}
-                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
-            {% endfor %}
-            </ul>
-            <form action="{% url 'new_comment' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input name="battle" type="hidden" value="{{ battle.id }}">
-                <input name="fighter" type="hidden" value="{{battle.fighter_two.id}}">
-                <input name="description" type="text">
-                <button type="submit">Comment</button>
-            </form>
-        </td>
-    </tr>
-</table>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+        {% load static from staticfiles %}
+		<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="{% static "css/font-awesome.min.css" %}" rel="stylesheet">
+
+
+		<!-- Main CSS -->
+		<link href="{% static "css/estilos.css" %}" rel="stylesheet">
+
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="#">
+	</head>
+
+	<body>
+		<!-- UI X -->
+		<div class="ui-97">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4 col-sm-4">
+						<!-- UI Member -->
+						<div class="ui-member">
+                            <div class="ui-310">
+			                    <div class="container-fluid">
+				                    <!-- Item -->
+				                    <div class="ui-item clearfix">
+					                    <!-- Heading -->
+					                    <h3 class="bg-red"><a href="#">Bandwidth</a></h3>
+					                    <!-- Content -->
+					                    <div class="ui-content">
+						                    <!-- Heading -->
+						                    <h4 class="bg-red"  data-valuemax="20" ><span></span></h4>
+					                    </div>
+				                    </div>
+                                </div>
+                            </div>
+							<!-- UIs member header -->
+							<div class="ui-head">
+								<!-- Member background image -->
+								<img class="ui-back img-responsive" src="{{battle.fighter_one.image.url}}" alt="" />
+							</div>
+							<!--Name / Heading -->
+							<h3><a href="#">{{battle.fighter_one}}</a></h3>
+							<!-- Member designation -->
+							<span>
+                                <form action="{% url 'battle_page' slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}{{battle.fighter_one.vote_set.count}}
+                                    <input name="battle" type="hidden" value="{{ battle.id }}">
+                                    <input type="hidden" name="action" value="vote" />
+                                    <button name="fighter" type="submit" value="{{battle.fighter_one.id}}">Vote</button>
+                                </form>
+                            </span>
+							<!-- Social media links -->
+							<div class="social">
+								<a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
+								<a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+								<a href="#" class="pinterest"><i class="fa fa-pinterest"></i></a>
+							</div>
+                            <!-- Description -->
+                            <div>
+                                {{battle.fighter_one.description}}
+                            </div>
+                            <!-- Comment -->
+                            <hr />
+                            <ul>
+                            {% for comment in latest_comment_fighter_one %}
+                                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+                            {% endfor %}
+                            </ul>
+                            <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input name="battle" type="hidden" value="{{ battle.id }}">
+                                <input type="hidden" name="action" value="comment" />
+                                <input name="fighter" type="hidden" value="{{battle.fighter_one.id}}">
+                                <input name="description" type="text">
+                                <button type="submit">Comment</button>
+                            </form>
+						</div>
+					</div>
+                    <div class="col-md-4 col-sm-4">
+                        <img class="ui-img img-responsive" src="/media/vs.png" alt="" />
+                    </div>
+					<div class="col-md-4 col-sm-4">
+						<!-- UI Member -->
+						<div class="ui-member">
+                            <div class="ui-310">
+			                    <div class="container-fluid">
+				                    <!-- Item -->
+				                    <div class="ui-item clearfix">
+					                    <!-- Heading -->
+					                    <h3 class="bg-red"><a href="#">Bandwidth</a></h3>
+					                    <!-- Content -->
+					                    <div class="ui-content">
+						                    <!-- Heading -->
+						                    <h4 class="bg-red"  data-valuemax="20" ><span></span></h4>
+					                    </div>
+				                    </div>
+                                </div>
+                            </div>
+							<!-- UIs member header -->
+							<div class="ui-head">
+								<!-- Member background image -->
+								<img class="ui-back img-responsive" src="{{battle.fighter_two.image.url}}" alt="" />
+							</div>
+							<!--Name / Heading -->
+							<h3><a href="#">{{battle.fighter_two}}</a></h3>
+							<!-- Member designation -->
+							<span>
+                                <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}{{battle.fighter_two.vote_set.count}}
+                                    <input name="battle" type="hidden" value="{{ battle.id }}">
+                                    <input type="hidden" name="action" value="vote" />
+                                    <button name="fighter" type="submit" value="{{battle.fighter_two.id}}">Vote</button>
+                                </form>
+                            </span>
+							<!-- Social media links -->
+							<div class="social">
+								<a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+								<a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
+								<a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+								<a href="#" class="pinterest"><i class="fa fa-pinterest"></i></a>
+							</div>
+                            <!-- Description -->
+                            <div>
+                                {{battle.fighter_two.description}}
+                            </div>
+                            <!-- Comment -->
+                            <hr />
+                            <ul>
+                            {% for comment in latest_comment_fighter_two %}
+                                <li>{{ comment.creator }}: {{ comment.description }} ({{ comment.date_updated }})</li>
+                            {% endfor %}
+                            </ul>
+                            <form action="{% url 'battle_page'  slug_one=battle.fighter_one.slug slug_two=battle.fighter_two.slug %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input name="battle" type="hidden" value="{{ battle.id }}">
+                                <input type="hidden" name="action" value="comment" />
+                                <input name="fighter" type="hidden" value="{{battle.fighter_two.id}}">
+                                <input name="description" type="text">
+                                <button type="submit">Comment</button>
+                            </form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="{% static "js/jquery.js" %}"></script>
+		<!-- Bootstrap JS -->
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
+		<!-- Placeholder JS -->
+		<script src="{% static "js/placeholder.js" %}"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="{% static "js/respond.min.js" %}"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="{% static "js/html5shiv.js" %}"></script>
+		<script>
+		<!-- Animation -->
+		$(document).ready(function(){
+			<!-- For Each Heading -->
+			$(".ui-content h4").each(function(){
+				var max = $(this).attr("data-valuemax");
+				$(this).prop('Counter', 0 ).animate({ width: max + "%", Counter: max }, {			//Min value 0 and Max value attribute value
+					duration: 2000,
+					easing: 'swing',
+					step: function () {
+					  $(this).children("span").text(Math.ceil(this.Counter) + "%");		//Count Number
+					}
+				});
+			});
+		});
+		</script>
+	</body>
+</html>

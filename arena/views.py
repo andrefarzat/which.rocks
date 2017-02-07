@@ -50,12 +50,12 @@ class NewView(LoginRequiredMixin, View):
         else:
             form1 = FighterForm(prefix='one')
             form2 = FighterForm(prefix='two')
-        form1.fields['slug'].widget = forms.HiddenInput()
-        form2.fields['slug'].widget = forms.HiddenInput()
+        #FIXME
+        #form1.fields['slug'].widget = forms.HiddenInput()
+        #form2.fields['slug'].widget = forms.HiddenInput()
         return render(request, 'new.html', {'fighter1': form1,
                                             'fighter2': form2,
                                             'success': success})
-
 
 class BattleView(View):
     def get(self, request, slug_one, slug_two):
@@ -75,8 +75,26 @@ class BattleView(View):
 
         return render(request, 'battle.html', { 'battle': battle[0],
                                                 'latest_comment_fighter_one': latest_comment_fighter_one,
-                                                'latest_comment_fighter_two': latest_comment_fighter_two,})
+                                                'latest_comment_fighter_two':latest_comment_fighter_two,})
 
+    def post(self, request, slug_one, slug_two):
+        if request.POST['action'] == "vote":
+            # Check if battle exists
+            fighter_one = Fighter.objects.get(slug=slug_one)
+            fighter_two = Fighter.objects.get(slug=slug_two)
+            battle = Battle.objects.filter(fighter_one=fighter_one, fighter_two=fighter_two) | Battle.objects.filter(fighter_one=fighter_two, fighter_two=fighter_one)
+            vote = Vote.objects.filter(creator=request.user, battle=battle)
+            if vote.count() != 0:
+                return HttpResponse("Already voted in this battle")
+            # Save vote
+            form = VoteForm(request.POST)
+            form.instance.creator = request.user
+            form.save()
+        if request.POST['action'] == "comment":
+            form = CommentForm(request.POST)
+            form.instance.creator = request.user
+            form.save()
+        return self.get(request, slug_one, slug_two)
 
 class HomeView(View):
     def get(self, request):
@@ -107,39 +125,3 @@ class UserView(View):
 class SettingsView(View):
     def get(self, request):
         return HttpResponse("Settings page")
-
-
-def new_vote(request):
-    if request.method == 'POST':
-        form = VoteForm(request.POST)
-        if form.is_valid():
-            try:
-                created = Vote.objects.get(voter = request.user, battle = Battle.objects.get(id=request.POST['battle']))
-                return HttpResponse("You already voted in this battle")
-            except:
-                newvote = Vote(
-                    voter = request.user,
-                    battle = Battle.objects.get(id=request.POST['battle']),
-                    fighter = Fighter.objects.get(id=request.POST['fighter']),
-                    )
-                newvote.save()
-                return render(request, 'new_vote.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})
-    else:
-        return redirect(index)
-
-
-def new_comment(request):
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            newcomment = Comment(
-                creator = request.user,
-                fighter = Fighter.objects.get(id=request.POST['fighter']),
-                battle = Battle.objects.get(id=request.POST['battle']),
-                description = request.POST['description'],
-                )
-            newcomment.save()
-    else:
-        return redirect(index)
-
-    return render(request, 'new_comment.html', {'fighter': Fighter.objects.get(id=request.POST['fighter']),})

@@ -14,7 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
+
 from . import views
 
 
@@ -29,3 +32,6 @@ urlpatterns = [
     url(r'^(?P<fighter_slug>\w+)/edit/$', views.FighterView.as_view(), name='fighter_edit'),
     url(r'^(?P<slug_one>\w+)/(?P<slug_two>\w+)/$', views.BattleView.as_view(), name='battle_page'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
