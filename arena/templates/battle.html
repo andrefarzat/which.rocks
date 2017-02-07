@@ -33,6 +33,20 @@
 					<div class="col-md-4 col-sm-4">
 						<!-- UI Member -->
 						<div class="ui-member">
+                            <div class="ui-310">
+			                    <div class="container-fluid">
+				                    <!-- Item -->
+				                    <div class="ui-item clearfix">
+					                    <!-- Heading -->
+					                    <h3 class="bg-red"><a href="#">Bandwidth</a></h3>
+					                    <!-- Content -->
+					                    <div class="ui-content">
+						                    <!-- Heading -->
+						                    <h4 class="bg-red"  data-valuemax="20" ><span></span></h4>
+					                    </div>
+				                    </div>
+                                </div>
+                            </div>
 							<!-- UIs member header -->
 							<div class="ui-head">
 								<!-- Member background image -->
@@ -83,6 +97,20 @@
 					<div class="col-md-4 col-sm-4">
 						<!-- UI Member -->
 						<div class="ui-member">
+                            <div class="ui-310">
+			                    <div class="container-fluid">
+				                    <!-- Item -->
+				                    <div class="ui-item clearfix">
+					                    <!-- Heading -->
+					                    <h3 class="bg-red"><a href="#">Bandwidth</a></h3>
+					                    <!-- Content -->
+					                    <div class="ui-content">
+						                    <!-- Heading -->
+						                    <h4 class="bg-red"  data-valuemax="20" ><span></span></h4>
+					                    </div>
+				                    </div>
+                                </div>
+                            </div>
 							<!-- UIs member header -->
 							<div class="ui-head">
 								<!-- Member background image -->
@@ -143,5 +171,21 @@
 		<script src="{% static "js/respond.min.js" %}"></script>
 		<!-- HTML5 Support for IE -->
 		<script src="{% static "js/html5shiv.js" %}"></script>
+		<script>
+		<!-- Animation -->
+		$(document).ready(function(){
+			<!-- For Each Heading -->
+			$(".ui-content h4").each(function(){
+				var max = $(this).attr("data-valuemax");
+				$(this).prop('Counter', 0 ).animate({ width: max + "%", Counter: max }, {			//Min value 0 and Max value attribute value
+					duration: 2000,
+					easing: 'swing',
+					step: function () {
+					  $(this).children("span").text(Math.ceil(this.Counter) + "%");		//Count Number
+					}
+				});
+			});
+		});
+		</script>
 	</body>
 </html>

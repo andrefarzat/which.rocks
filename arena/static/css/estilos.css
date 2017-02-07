@@ -517,11 +517,11 @@ body{
 .ui-97{
 	margin:50px 0px;
 }
-.ui-97 .ui-member{	
+.ui-97 .ui-member{
 	max-width: 400px;
 	margin: 20px auto;
 	padding: 5px;
-	text-align: center; 
+	text-align: center;
 	background: #fff;
 	border: 1px solid #e7e7e7;
 	box-shadow:2px 2px 0px 1px rgba(0,0,0,0.07);
@@ -546,8 +546,8 @@ body{
 	border-radius: 200px;
 	box-shadow:0px 0px 10px rgba(0,0,0,0.2);
 }
-.ui-97 .ui-member h3 { 
-	font-size: 15px; 
+.ui-97 .ui-member h3 {
+	font-size: 15px;
 	line-height:30px;
 	text-transform:uppercase;
 }
@@ -571,6 +571,72 @@ body{
 	font-size: 14px;
 	color:#fff;
 	border-radius: 50px;
+}
+.ui-310{
+	max-width: 500px;
+	margin: 60px auto;
+}
+/* Item */
+.ui-310 .ui-item{
+	margin: 20px 0px;
+}
+/* Heading */
+.ui-310 .ui-item h3{
+	width: 130px;
+	float: left;
+	font-size: 13px;
+	line-height: 25px;
+	margin: 0px;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+@media(max-width: 450px){
+	.ui-310 .ui-item h3{
+		float: none;
+		margin-bottom: 10px;
+	}
+}
+.ui-310 .ui-item h3 > a{
+	display: block;
+	background: rgba(0,0,0,0.08);
+	text-align: right;
+	padding: 10px 18px 10px 0px;
+	color: #fff;
+}
+@media(max-width: 450px){
+	.ui-310 .ui-item  h3 > a{
+		text-align: left;
+		padding-left: 10px;
+	}
+}
+/* Content */
+.ui-310 .ui-item .ui-content{
+	margin-left: 130px;
+	box-shadow:inset 0px 0px 10px rgba(0,0,0,0.06);
+	background: #fafafa;
+}
+@media(max-width: 450px){
+	.ui-310 .ui-item .ui-content{
+		margin-left: 0px;
+	}
+}
+/* Heading */
+.ui-310 .ui-item .ui-content h4{
+	margin: 0px;
+	font-size: 15px;
+	line-height: 25px;
+	color: #fff;
+	width: 0px;
+}
+.ui-310 .ui-item .ui-content h4 > span{
+	display: block;
+	width: 100%;
+	padding: 10px 0px 10px 12px;
+}
+@media(max-width: 450px){
+	.ui-310 .ui-item .ui-content h4 > span{
+		padding-left: 10px;
+	}
 }
 .ui-310{
 	max-width: 500px;
